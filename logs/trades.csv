@@ -1,0 +1,1 @@
+timestamp,symbol,side,action,quantity,entry_price,exit_price,predicted_take_profit,predicted_stop_loss,current_price_at_entry,actual_exit_price,pnl,pnl_percent,price_change_percent,signal_confidence,signal_reason,exit_reason,target_hit,entry_time,exit_time,time_in_position_minutes,trade_id,reason
