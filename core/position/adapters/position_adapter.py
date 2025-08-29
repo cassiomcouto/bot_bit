@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Position Manager Adapter - Versão Completa com Todos os Métodos
-Resolve TODOS os erros de compatibilidade entre versões
+Position Manager Adapter - Versão Completa
+Compatibilidade total entre diferentes versões do PositionManager
 """
 
 import logging
@@ -11,15 +11,103 @@ from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
 
+
+class PositionWrapper:
+    """
+    Wrapper que converte dicionários em objetos compatíveis
+    Permite acesso tanto via atributo quanto via índice
+    """
+    
+    def __init__(self, data: Union[Dict, Any]):
+        """
+        Inicializa o wrapper
+        
+        Args:
+            data: Dados da posição (dict ou objeto)
+        """
+        if isinstance(data, dict):
+            self._data = data
+            self._is_dict = True
+        else:
+            self._data = data
+            self._is_dict = False
+    
+    def __getattr__(self, name):
+        """Acesso via atributo (position.symbol)"""
+        if self._is_dict:
+            if name in self._data:
+                return self._data[name]
+            # Tenta nomes alternativos
+            alternatives = {
+                'entry_price': ['entryPrice', 'price', 'avgPrice'],
+                'quantity': ['amount', 'size', 'contracts'],
+                'side': ['positionSide', 'position_side'],
+                'symbol': ['pair', 'market'],
+                'pnl': ['unrealizedPnl', 'realizedPnl', 'profit'],
+                'entry_time': ['entryTime', 'openTime', 'timestamp']
+            }
+            if name in alternatives:
+                for alt in alternatives[name]:
+                    if alt in self._data:
+                        return self._data[alt]
+            return None
+        else:
+            return getattr(self._data, name, None)
+    
+    def __getitem__(self, key):
+        """Acesso via índice (position['symbol'])"""
+        if self._is_dict:
+            return self._data.get(key)
+        else:
+            return getattr(self._data, key, None)
+    
+    def __setattr__(self, name, value):
+        """Define atributo"""
+        if name.startswith('_'):
+            super().__setattr__(name, value)
+        elif hasattr(self, '_is_dict') and self._is_dict:
+            self._data[name] = value
+        elif hasattr(self, '_data'):
+            setattr(self._data, name, value)
+        else:
+            super().__setattr__(name, value)
+    
+    def __setitem__(self, key, value):
+        """Define via índice"""
+        if self._is_dict:
+            self._data[key] = value
+        else:
+            setattr(self._data, key, value)
+    
+    def get(self, key, default=None):
+        """Método get compatível com dict"""
+        if self._is_dict:
+            return self._data.get(key, default)
+        else:
+            return getattr(self._data, key, default)
+    
+    def to_dict(self) -> Dict:
+        """Converte para dicionário"""
+        if self._is_dict:
+            return self._data.copy()
+        else:
+            # Converte objeto para dict
+            result = {}
+            for attr in dir(self._data):
+                if not attr.startswith('_'):
+                    value = getattr(self._data, attr)
+                    if not callable(value):
+                        result[attr] = value
+            return result
+    
+    def __repr__(self):
+        return f"PositionWrapper({self._data})"
+
+
 class PositionManagerAdapter:
     """
-    Adaptador completo que implementa TODOS os métodos esperados
-    
-    Este adaptador:
-    1. Faz proxy de todos os métodos do PositionManager original
-    2. Adiciona métodos faltantes com implementações funcionais
-    3. Resolve problemas de assinatura (como o erro 'percentage')
-    4. Mantém compatibilidade total com o bot integrado
+    Adaptador principal que garante compatibilidade entre versões
+    Nome da classe mantido como 'PositionManagerAdapter' para compatibilidade
     """
     
     def __init__(self, position_manager):
@@ -39,7 +127,15 @@ class PositionManagerAdapter:
         
         logger.info("PositionManagerAdapter inicializado com sucesso")
     
-    # ========== MÉTODOS ESSENCIAIS DE PROXY ==========
+    def _wrap_position(self, position):
+        """Envolve posição em wrapper se necessário"""
+        if position is None:
+            return None
+        if isinstance(position, (dict, object)):
+            return PositionWrapper(position)
+        return position
+    
+    # ========== MÉTODOS ESSENCIAIS ==========
     
     def has_position(self, symbol: str) -> bool:
         """Verifica se tem posição para o símbolo"""
@@ -50,12 +146,32 @@ class PositionManagerAdapter:
         return False
     
     def get_position(self, symbol: str):
-        """Obtém dados da posição"""
+        """Obtém dados da posição com wrapper"""
+        position = None
+        
         if hasattr(self.position_manager, 'get_position'):
-            return self.position_manager.get_position(symbol)
+            position = self.position_manager.get_position(symbol)
         elif hasattr(self.position_manager, 'positions'):
-            return self.position_manager.positions.get(symbol)
-        return None
+            position = self.position_manager.positions.get(symbol)
+        
+        # Sempre retorna wrapped para evitar erro de 'dict' object
+        return self._wrap_position(position)
+    
+    def get_all_positions(self):
+        """Retorna todas as posições com wrapper"""
+        positions = {}
+        
+        if hasattr(self.position_manager, 'get_all_positions'):
+            positions = self.position_manager.get_all_positions()
+        elif hasattr(self.position_manager, 'positions'):
+            positions = self.position_manager.positions
+        
+        # Wrap todas as posições
+        wrapped = {}
+        for symbol, pos in positions.items():
+            wrapped[symbol] = self._wrap_position(pos)
+        
+        return wrapped
     
     def can_open_position(self, symbol: str) -> bool:
         """Verifica se pode abrir nova posição"""
@@ -119,7 +235,7 @@ class PositionManagerAdapter:
             return self.position_manager.print_positions()
         else:
             # Implementação fallback
-            positions = getattr(self.position_manager, 'positions', {})
+            positions = self.get_all_positions()
             balance = self.get_balance()
             
             if not positions:
@@ -127,23 +243,33 @@ class PositionManagerAdapter:
             else:
                 print(f"Posições abertas: {len(positions)} | Saldo: ${balance:.2f}")
                 for symbol, pos in positions.items():
-                    side = pos.get('side', 'unknown')
-                    quantity = pos.get('quantity', 0)
-                    entry_price = pos.get('entry_price', 0)
+                    side = pos.side or pos.get('side', 'unknown')
+                    quantity = pos.quantity or pos.get('quantity', 0)
+                    entry_price = pos.entry_price or pos.get('entry_price', 0)
                     print(f"  {symbol}: {side.upper()} {quantity:.4f} @ ${entry_price:.2f}")
     
     def sync_positions(self, positions):
         """Sincroniza posições com a exchange"""
+        wrapped_positions = {}
+        
+        for pos in positions:
+            # Detecta o símbolo
+            if hasattr(pos, 'symbol'):
+                symbol = pos.symbol
+            elif isinstance(pos, dict) and 'symbol' in pos:
+                symbol = pos['symbol']
+            else:
+                symbol = str(pos)
+            
+            wrapped_positions[symbol] = self._wrap_position(pos)
+        
         if hasattr(self.position_manager, 'sync_positions'):
             return self.position_manager.sync_positions(positions)
         else:
             # Implementação fallback
             logger.info(f"Sincronizando {len(positions)} posições")
             if hasattr(self.position_manager, 'positions'):
-                self.position_manager.positions.clear()
-                for pos in positions:
-                    symbol = getattr(pos, 'symbol', str(pos))
-                    self.position_manager.positions[symbol] = pos
+                self.position_manager.positions = wrapped_positions
     
     def cancel_all_orders(self):
         """Cancela todas as ordens abertas"""
@@ -152,20 +278,12 @@ class PositionManagerAdapter:
         else:
             logger.info("cancel_all_orders: operação não disponível")
     
-    # ========== MÉTODOS DE TIMING (NOVOS) ==========
+    # ========== MÉTODOS DE TIMING ==========
     
     def should_close_by_timing(self, symbol: str, current_price: float) -> Tuple[bool, str]:
         """
         Verifica se a posição deve ser fechada baseado em critérios de tempo
-        
-        Args:
-            symbol: Símbolo da posição
-            current_price: Preço atual
-            
-        Returns:
-            tuple: (should_close: bool, reason: str)
         """
-        # Primeiro tenta usar método original se existir
         if hasattr(self.position_manager, 'should_close_by_timing'):
             try:
                 return self.position_manager.should_close_by_timing(symbol, current_price)
@@ -178,12 +296,7 @@ class PositionManagerAdapter:
             return False, "Sem posição"
         
         # Obtém tempo de entrada
-        entry_time = None
-        if isinstance(position, dict):
-            entry_time = position.get('entry_time')
-        else:
-            entry_time = getattr(position, 'entry_time', None)
-        
+        entry_time = position.entry_time or position.get('entry_time')
         if not entry_time:
             return False, "Sem timestamp de entrada"
         
@@ -198,7 +311,7 @@ class PositionManagerAdapter:
         position_age = datetime.now() - entry_time
         age_hours = position_age.total_seconds() / 3600
         
-        # Critério simples: fecha após 24 horas
+        # Critério: fecha após 24 horas
         max_hours = 24
         if hasattr(self.position_manager, 'config'):
             max_seconds = self.position_manager.config.get('strategy', {}).get('max_position_hold_seconds', 86400)
@@ -212,15 +325,7 @@ class PositionManagerAdapter:
     def check_take_profit_conditions(self, symbol: str, current_price: float) -> Tuple[bool, str, float]:
         """
         Verifica condições de take profit
-        
-        Args:
-            symbol: Símbolo da posição
-            current_price: Preço atual
-            
-        Returns:
-            tuple: (should_take: bool, reason: str, percentage: float)
         """
-        # Tenta usar método original
         if hasattr(self.position_manager, 'check_take_profit_conditions'):
             try:
                 return self.position_manager.check_take_profit_conditions(symbol, current_price)
@@ -233,12 +338,8 @@ class PositionManagerAdapter:
             return False, "Sem posição", 0.0
         
         # Obtém dados da posição
-        if isinstance(position, dict):
-            entry_price = position.get('entry_price', current_price)
-            side = position.get('side', 'long')
-        else:
-            entry_price = getattr(position, 'entry_price', current_price)
-            side = getattr(position, 'side', 'long')
+        entry_price = position.entry_price or position.get('entry_price', current_price)
+        side = position.side or position.get('side', 'long')
         
         # Calcula PnL percentual
         if str(side).lower() in ['long', 'buy']:
@@ -261,7 +362,7 @@ class PositionManagerAdapter:
         
         return False, f"PnL: {pnl_pct:.2f}%", 0.0
     
-    # ========== MÉTODOS DE ABERTURA/FECHAMENTO COM ADAPTAÇÃO ==========
+    # ========== MÉTODOS DE ABERTURA/FECHAMENTO ==========
     
     def open_position(self, symbol: str, side: str, size: float, price: float,
                      reason: str = None, confidence: float = None, **kwargs) -> Dict[str, Any]:
@@ -270,9 +371,16 @@ class PositionManagerAdapter:
         """
         # Lista de estratégias para tentar
         strategies = [
-            lambda: self.position_manager.open_position(symbol=symbol, side=side, size=size, price=price, reason=reason, confidence=confidence),
-            lambda: self.position_manager.open_position(symbol=symbol, side=side, size=size, price=price, reason=reason),
-            lambda: self.position_manager.open_position(symbol=symbol, side=side, size=size, price=price),
+            lambda: self.position_manager.open_position(
+                symbol=symbol, side=side, size=size, price=price, 
+                reason=reason, confidence=confidence
+            ),
+            lambda: self.position_manager.open_position(
+                symbol=symbol, side=side, size=size, price=price, reason=reason
+            ),
+            lambda: self.position_manager.open_position(
+                symbol=symbol, side=side, size=size, price=price
+            ),
             lambda: self.position_manager.open_position(symbol, side, size, price),
         ]
         
@@ -281,12 +389,26 @@ class PositionManagerAdapter:
                 result = strategy()
                 if result is None:
                     continue
-                    
+                
+                # Cria posição wrapped
+                position_data = {
+                    'symbol': symbol,
+                    'side': side,
+                    'quantity': size,
+                    'entry_price': price,
+                    'entry_time': datetime.now(),
+                    'reason': reason
+                }
+                
+                # Adiciona ao tracking
+                if hasattr(self.position_manager, 'positions'):
+                    self.position_manager.positions[symbol] = position_data
+                
                 # Normaliza resultado
                 if isinstance(result, dict):
                     return result
                 else:
-                    return {'success': True, 'trade': result}
+                    return {'success': True, 'trade': result, 'position': position_data}
                     
             except Exception as e:
                 continue
@@ -299,6 +421,9 @@ class PositionManagerAdapter:
         """
         Fecha posição com compatibilidade total
         """
+        # Obtém posição atual para calcular PnL
+        position = self.get_position(symbol)
+        
         # Cache de estratégia bem-sucedida
         cache_key = 'close_position'
         if cache_key in self.strategy_cache:
@@ -312,8 +437,12 @@ class PositionManagerAdapter:
         
         # Lista de estratégias
         strategies = [
-            ('basic', lambda: self.position_manager.close_position(symbol=symbol, price=price, reason=reason)),
-            ('with_percentage', lambda: self.position_manager.close_position(symbol=symbol, price=price, reason=reason, percentage=percentage)),
+            ('basic', lambda: self.position_manager.close_position(
+                symbol=symbol, price=price, reason=reason
+            )),
+            ('with_percentage', lambda: self.position_manager.close_position(
+                symbol=symbol, price=price, reason=reason, percentage=percentage
+            )),
             ('positional', lambda: self.position_manager.close_position(symbol, price)),
             ('symbol_only', lambda: self.position_manager.close_position(symbol)),
         ]
@@ -322,16 +451,33 @@ class PositionManagerAdapter:
             try:
                 result = strategy()
                 
-                # Normaliza resultado
                 if result is None:
                     continue
-                    
+                
+                # Remove do tracking
+                if hasattr(self.position_manager, 'positions'):
+                    if symbol in self.position_manager.positions:
+                        del self.position_manager.positions[symbol]
+                
                 if isinstance(result, dict):
                     if result.get('success') is not False:
                         self.strategy_cache[cache_key] = name
                         return result
                 else:
-                    return {'success': True, 'trade': result, 'pnl': 0}
+                    # Calcula PnL se possível
+                    pnl = 0
+                    if position and price:
+                        entry_price = position.entry_price or position.get('entry_price')
+                        quantity = position.quantity or position.get('quantity')
+                        side = position.side or position.get('side')
+                        
+                        if entry_price and quantity:
+                            if str(side).lower() in ['long', 'buy']:
+                                pnl = (price - entry_price) * quantity
+                            else:
+                                pnl = (entry_price - price) * quantity
+                    
+                    return {'success': True, 'trade': result, 'pnl': pnl}
                     
             except TypeError as e:
                 if 'percentage' in str(e):
@@ -455,4 +601,18 @@ class PositionManagerAdapter:
             for key, value in self.strategy_cache.items():
                 print(f"    {key}: {value}")
         
+        # Posições atuais
+        positions = self.get_all_positions()
+        print(f"\n📊 Posições Atuais: {len(positions)}")
+        for symbol in positions:
+            print(f"    • {symbol}")
+        
         print("="*60)
+
+
+# Alias para compatibilidade
+EnhancedPositionManagerAdapter = PositionManagerAdapter
+
+
+# Exporta as classes principais
+__all__ = ['PositionManagerAdapter', 'EnhancedPositionManagerAdapter', 'PositionWrapper']

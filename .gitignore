@@ -12,3 +12,5 @@
 
 *.log
 logs/bot.log
+logs/*
+config/future_config.yaml
