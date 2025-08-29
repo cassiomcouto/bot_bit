@@ -15,8 +15,8 @@ advanced:
 exchanges:
   bingx:
     # Credenciais API
-    api_key: "Y53NBuKE1oVfxC4hX2BAtL2Hbv9h0tOEwOl7kAyG2MgFB5zQLQokT7y8lhZdXEA6cbOwKZz4SjS4RhwNFQ"
-    secret_key: "M0MLgWDwbTwKTBC8ddnlRVDKsNqsyO1kEy7WwnwIpXzolSV7T7YhlIDyaxUslqJ4UICfCluLWpilXRCZ5rrg"
+    api_key: ""
+    secret_key: ""
     testnet: false                      # true = testnet, false = mainnet
     
     # URLs da API

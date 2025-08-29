@@ -1,3 +1,0 @@
-timestamp,symbol,side,action,quantity,entry_price,exit_price,predicted_take_profit,predicted_stop_loss,current_price_at_entry,actual_exit_price,pnl,pnl_percent,price_change_percent,signal_confidence,signal_reason,exit_reason,target_hit,entry_time,exit_time,time_in_position_minutes,trade_id,reason
-2025-08-28 13:39:37,BTC/USDT,long,unknown,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.00,0.00,0.00,0.00,N/A,N/A,UNKNOWN,,,0.0,,MACD forte bullish | EMA bullish | Momentum neutro (ranging - confiança reduzida)
-2025-08-28 21:29:08,SOL/USDT,long,open,0.0092,217.0190,0.0000,0.0000,0.0000,217.0190,0.0000,0.00,0.00,0.00,0.00,N/A,N/A,UNKNOWN,2025-08-28 21:29:08,,0.0,,MACD forte bullish | EMA forte bullish | Momentum bullish (ranging - confiança reduzida)
