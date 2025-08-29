@@ -1,0 +1,711 @@
+2025-08-28 20:52:03 - root - INFO - run:143 - Iniciando BingX Futures Bot v2.2.2
+2025-08-28 20:52:03 - root - INFO - run:147 - 🤖 Inicializando bot...
+2025-08-28 20:52:03 - root - INFO - _initialize_bot:68 - Carregando bot integrado com sistema IA
+2025-08-28 20:52:03 - core.managers - DEBUG - <module>:22 - Base managers não disponíveis: No module named 'core.managers.managers'
+2025-08-28 20:52:03 - core.managers - DEBUG - <module>:28 - PositionManager não disponível: No module named 'core.managers.managers'
+2025-08-28 20:52:03 - core.managers - DEBUG - <module>:40 - BotFactory não disponível: No module named 'core.managers.bot'
+2025-08-28 20:52:03 - core.managers - DEBUG - <module>:46 - BaseBot não disponível: No module named 'core.managers.bot'
+2025-08-28 20:52:03 - core.managers - DEBUG - <module>:52 - FuturesBot não disponível: No module named 'core.managers.bot'
+2025-08-28 20:52:03 - core.managers - DEBUG - <module>:62 - AIConfigOptimizer não disponível: No module named 'core.managers.analysis'
+2025-08-28 20:52:03 - core.managers - DEBUG - <module>:68 - MetricsCalculator não disponível: No module named 'core.managers.analysis'
+2025-08-28 20:52:03 - core.managers - DEBUG - <module>:82 - Position sizing não disponível: No module named 'core.managers.position'
+2025-08-28 20:52:03 - core.managers - DEBUG - <module>:88 - Position execution não disponível: No module named 'core.managers.position'
+2025-08-28 20:52:03 - core.managers - DEBUG - <module>:97 - Safety systems não disponíveis: No module named 'core.managers.safety'
+2025-08-28 20:52:03 - core.managers - DEBUG - <module>:106 - Config systems não disponíveis: No module named 'core.managers.config'
+2025-08-28 20:52:03 - core.managers - INFO - <module>:200 - Core module loaded: 0 components available
+2025-08-28 20:52:03 - core - DEBUG - <module>:22 - Base managers importados
+2025-08-28 20:52:03 - core.position - DEBUG - <module>:22 - Position sizing não disponível: cannot import name 'BasePositionSizer' from 'core.position.sizing' (/Users/cassio/desenvolvimento/Bot/future/bot_bitcoin/core/position/sizing/__init__.py)
+2025-08-28 20:52:03 - core.position.execution - DEBUG - <module>:23 - OrderExecutor não disponível: cannot import name 'PositionSizerFactory' from 'core.position.sizing' (/Users/cassio/desenvolvimento/Bot/future/bot_bitcoin/core/position/sizing/__init__.py)
+2025-08-28 20:52:03 - core.position.execution - DEBUG - <module>:29 - PositionTracker não disponível: No module named 'core.position.execution.position_tracker'
+2025-08-28 20:52:03 - core.position.execution - DEBUG - <module>:35 - ExitManager não disponível: No module named 'core.position.execution.exit_manager'
+2025-08-28 20:52:03 - core.position - DEBUG - <module>:33 - Position execution components importados
+2025-08-28 20:52:03 - core - DEBUG - <module>:28 - PositionManager importado
+2025-08-28 20:52:03 - core - DEBUG - <module>:36 - RiskManager importado de managers
+2025-08-28 20:52:03 - core - DEBUG - <module>:46 - BotFactory falhou: No module named 'core.analysis.managers'
+2025-08-28 20:52:03 - core - DEBUG - <module>:54 - AIConfigOptimizer falhou: No module named 'core.analysis.managers'
+2025-08-28 20:52:03 - core - DEBUG - <module>:62 - MetricsCalculator falhou: No module named 'core.analysis.managers'
+2025-08-28 20:52:03 - core - INFO - <module>:104 - Core module loaded: 5 components available
+2025-08-28 20:52:03 - root - ERROR - run:196 - 📦 Erro de importação: No module named 'core.analysis.managers'
+2025-08-28 20:52:03 - root - ERROR - run:197 - Verifique se todos os módulos estão instalados
+2025-08-28 20:52:03 - root - INFO - run:209 - Bot finalizado
+2025-08-28 20:58:18 - root - INFO - run:143 - Iniciando BingX Futures Bot v2.2.2
+2025-08-28 20:58:18 - root - INFO - run:147 - 🤖 Inicializando bot...
+2025-08-28 20:58:18 - root - INFO - _initialize_bot:68 - Carregando bot integrado com sistema IA
+2025-08-28 20:58:18 - core.managers - DEBUG - <module>:22 - Base managers não disponíveis: No module named 'core.managers.managers'
+2025-08-28 20:58:18 - core.managers - DEBUG - <module>:28 - PositionManager não disponível: No module named 'core.managers.managers'
+2025-08-28 20:58:18 - core.managers - DEBUG - <module>:40 - BotFactory não disponível: No module named 'core.managers.bot'
+2025-08-28 20:58:18 - core.managers - DEBUG - <module>:46 - BaseBot não disponível: No module named 'core.managers.bot'
+2025-08-28 20:58:18 - core.managers - DEBUG - <module>:52 - FuturesBot não disponível: No module named 'core.managers.bot'
+2025-08-28 20:58:18 - core.managers - DEBUG - <module>:62 - AIConfigOptimizer não disponível: No module named 'core.managers.analysis'
+2025-08-28 20:58:18 - core.managers - DEBUG - <module>:68 - MetricsCalculator não disponível: No module named 'core.managers.analysis'
+2025-08-28 20:58:18 - core.managers - DEBUG - <module>:82 - Position sizing não disponível: No module named 'core.managers.position'
+2025-08-28 20:58:18 - core.managers - DEBUG - <module>:88 - Position execution não disponível: No module named 'core.managers.position'
+2025-08-28 20:58:18 - core.managers - DEBUG - <module>:97 - Safety systems não disponíveis: No module named 'core.managers.safety'
+2025-08-28 20:58:18 - core.managers - DEBUG - <module>:106 - Config systems não disponíveis: No module named 'core.managers.config'
+2025-08-28 20:58:18 - core.managers - INFO - <module>:200 - Core module loaded: 0 components available
+2025-08-28 20:58:18 - core - DEBUG - <module>:22 - Base managers importados
+2025-08-28 20:58:18 - core.position - DEBUG - <module>:22 - Position sizing não disponível: cannot import name 'BasePositionSizer' from 'core.position.sizing' (/Users/cassio/desenvolvimento/Bot/future/bot_bitcoin/core/position/sizing/__init__.py)
+2025-08-28 20:58:18 - core.position.execution - DEBUG - <module>:23 - OrderExecutor não disponível: cannot import name 'PositionSizerFactory' from 'core.position.sizing' (/Users/cassio/desenvolvimento/Bot/future/bot_bitcoin/core/position/sizing/__init__.py)
+2025-08-28 20:58:18 - core.position.execution - DEBUG - <module>:29 - PositionTracker não disponível: No module named 'core.position.execution.position_tracker'
+2025-08-28 20:58:18 - core.position.execution - DEBUG - <module>:35 - ExitManager não disponível: No module named 'core.position.execution.exit_manager'
+2025-08-28 20:58:18 - core.position - DEBUG - <module>:33 - Position execution components importados
+2025-08-28 20:58:18 - core - DEBUG - <module>:28 - PositionManager importado
+2025-08-28 20:58:18 - core - DEBUG - <module>:36 - RiskManager importado de managers
+2025-08-28 20:58:18 - core.bot.futures_bot - DEBUG - <module>:22 - MetricsCalculator não disponível: No module named 'core.analysis.managers'
+2025-08-28 20:58:18 - core - DEBUG - <module>:44 - BotFactory importado
+2025-08-28 20:58:18 - core - DEBUG - <module>:54 - AIConfigOptimizer falhou: No module named 'core.analysis.managers'
+2025-08-28 20:58:18 - core - DEBUG - <module>:62 - MetricsCalculator falhou: No module named 'core.analysis.managers'
+2025-08-28 20:58:18 - core - INFO - <module>:104 - Core module loaded: 6 components available
+2025-08-28 20:58:18 - root - ERROR - run:196 - 📦 Erro de importação: No module named 'core.analysis.managers'
+2025-08-28 20:58:18 - root - ERROR - run:197 - Verifique se todos os módulos estão instalados
+2025-08-28 20:58:18 - root - INFO - run:209 - Bot finalizado
+2025-08-28 21:00:41 - root - INFO - run:143 - Iniciando BingX Futures Bot v2.2.2
+2025-08-28 21:00:41 - root - INFO - run:147 - 🤖 Inicializando bot...
+2025-08-28 21:00:41 - root - INFO - _initialize_bot:68 - Carregando bot integrado com sistema IA
+2025-08-28 21:00:41 - core.managers - DEBUG - <module>:22 - Base managers não disponíveis: No module named 'core.managers.managers'
+2025-08-28 21:00:41 - core.managers - DEBUG - <module>:28 - PositionManager não disponível: No module named 'core.managers.managers'
+2025-08-28 21:00:41 - core.managers - DEBUG - <module>:40 - BotFactory não disponível: No module named 'core.managers.bot'
+2025-08-28 21:00:41 - core.managers - DEBUG - <module>:46 - BaseBot não disponível: No module named 'core.managers.bot'
+2025-08-28 21:00:41 - core.managers - DEBUG - <module>:52 - FuturesBot não disponível: No module named 'core.managers.bot'
+2025-08-28 21:00:41 - core.managers - DEBUG - <module>:62 - AIConfigOptimizer não disponível: No module named 'core.managers.analysis'
+2025-08-28 21:00:41 - core.managers - DEBUG - <module>:68 - MetricsCalculator não disponível: No module named 'core.managers.analysis'
+2025-08-28 21:00:41 - core.managers - DEBUG - <module>:82 - Position sizing não disponível: No module named 'core.managers.position'
+2025-08-28 21:00:41 - core.managers - DEBUG - <module>:88 - Position execution não disponível: No module named 'core.managers.position'
+2025-08-28 21:00:41 - core.managers - DEBUG - <module>:97 - Safety systems não disponíveis: No module named 'core.managers.safety'
+2025-08-28 21:00:41 - core.managers - DEBUG - <module>:106 - Config systems não disponíveis: No module named 'core.managers.config'
+2025-08-28 21:00:41 - core.managers - INFO - <module>:200 - Core module loaded: 0 components available
+2025-08-28 21:00:41 - core - DEBUG - <module>:22 - Base managers importados
+2025-08-28 21:00:41 - core - DEBUG - <module>:28 - PositionManager importado
+2025-08-28 21:00:41 - core - DEBUG - <module>:36 - RiskManager importado de managers
+2025-08-28 21:00:41 - core.bot.futures_bot - DEBUG - <module>:22 - MetricsCalculator não disponível: No module named 'core.analysis.managers'
+2025-08-28 21:00:41 - core - DEBUG - <module>:44 - BotFactory importado
+2025-08-28 21:00:41 - core - DEBUG - <module>:54 - AIConfigOptimizer falhou: No module named 'core.analysis.managers'
+2025-08-28 21:00:41 - core - DEBUG - <module>:62 - MetricsCalculator falhou: No module named 'core.analysis.managers'
+2025-08-28 21:00:41 - core - INFO - <module>:104 - Core module loaded: 6 components available
+2025-08-28 21:00:41 - root - ERROR - run:196 - 📦 Erro de importação: No module named 'core.analysis.managers'
+2025-08-28 21:00:41 - root - ERROR - run:197 - Verifique se todos os módulos estão instalados
+2025-08-28 21:00:41 - root - INFO - run:209 - Bot finalizado
+2025-08-28 21:04:45 - root - INFO - run:143 - Iniciando BingX Futures Bot v2.2.2
+2025-08-28 21:04:45 - root - INFO - run:147 - 🤖 Inicializando bot...
+2025-08-28 21:04:45 - root - INFO - _initialize_bot:68 - Carregando bot integrado com sistema IA
+2025-08-28 21:04:45 - core.managers - DEBUG - <module>:22 - Base managers não disponíveis: No module named 'core.managers.managers'
+2025-08-28 21:04:45 - core.managers - DEBUG - <module>:28 - PositionManager não disponível: No module named 'core.managers.managers'
+2025-08-28 21:04:45 - core.managers - DEBUG - <module>:40 - BotFactory não disponível: No module named 'core.managers.bot'
+2025-08-28 21:04:45 - core.managers - DEBUG - <module>:46 - BaseBot não disponível: No module named 'core.managers.bot'
+2025-08-28 21:04:45 - core.managers - DEBUG - <module>:52 - FuturesBot não disponível: No module named 'core.managers.bot'
+2025-08-28 21:04:45 - core.managers - DEBUG - <module>:62 - AIConfigOptimizer não disponível: No module named 'core.managers.analysis'
+2025-08-28 21:04:45 - core.managers - DEBUG - <module>:68 - MetricsCalculator não disponível: No module named 'core.managers.analysis'
+2025-08-28 21:04:45 - core.managers - DEBUG - <module>:82 - Position sizing não disponível: No module named 'core.managers.position'
+2025-08-28 21:04:45 - core.managers - DEBUG - <module>:88 - Position execution não disponível: No module named 'core.managers.position'
+2025-08-28 21:04:45 - core.managers - DEBUG - <module>:97 - Safety systems não disponíveis: No module named 'core.managers.safety'
+2025-08-28 21:04:45 - core.managers - DEBUG - <module>:106 - Config systems não disponíveis: No module named 'core.managers.config'
+2025-08-28 21:04:45 - core.managers - INFO - <module>:200 - Core module loaded: 0 components available
+2025-08-28 21:04:45 - core - DEBUG - <module>:22 - Base managers importados
+2025-08-28 21:04:45 - core - DEBUG - <module>:28 - PositionManager importado
+2025-08-28 21:04:45 - core - DEBUG - <module>:36 - RiskManager importado de managers
+2025-08-28 21:04:45 - core.bot.futures_bot - DEBUG - <module>:22 - MetricsCalculator não disponível: No module named 'core.analysis.managers.base_manager'; 'core.analysis.managers' is not a package
+2025-08-28 21:04:45 - core - DEBUG - <module>:44 - BotFactory importado
+2025-08-28 21:04:45 - core - DEBUG - <module>:54 - AIConfigOptimizer falhou: No module named 'core.analysis.managers.base_manager'; 'core.analysis.managers' is not a package
+2025-08-28 21:04:45 - core - DEBUG - <module>:62 - MetricsCalculator falhou: No module named 'core.analysis.managers.base_manager'; 'core.analysis.managers' is not a package
+2025-08-28 21:04:45 - core - INFO - <module>:104 - Core module loaded: 6 components available
+2025-08-28 21:04:45 - root - ERROR - run:196 - 📦 Erro de importação: No module named 'core.analysis.managers.base_manager'; 'core.analysis.managers' is not a package
+2025-08-28 21:04:45 - root - ERROR - run:197 - Verifique se todos os módulos estão instalados
+2025-08-28 21:04:45 - root - INFO - run:209 - Bot finalizado
+2025-08-28 21:07:27 - root - INFO - run:143 - Iniciando BingX Futures Bot v2.2.2
+2025-08-28 21:07:27 - root - INFO - run:147 - 🤖 Inicializando bot...
+2025-08-28 21:07:27 - root - INFO - _initialize_bot:68 - Carregando bot integrado com sistema IA
+2025-08-28 21:07:27 - core.managers - DEBUG - <module>:22 - Base managers não disponíveis: No module named 'core.managers.managers'
+2025-08-28 21:07:27 - core.managers - DEBUG - <module>:28 - PositionManager não disponível: No module named 'core.managers.managers'
+2025-08-28 21:07:27 - core.managers - DEBUG - <module>:40 - BotFactory não disponível: No module named 'core.managers.bot'
+2025-08-28 21:07:27 - core.managers - DEBUG - <module>:46 - BaseBot não disponível: No module named 'core.managers.bot'
+2025-08-28 21:07:27 - core.managers - DEBUG - <module>:52 - FuturesBot não disponível: No module named 'core.managers.bot'
+2025-08-28 21:07:27 - core.managers - DEBUG - <module>:62 - AIConfigOptimizer não disponível: No module named 'core.managers.analysis'
+2025-08-28 21:07:27 - core.managers - DEBUG - <module>:68 - MetricsCalculator não disponível: No module named 'core.managers.analysis'
+2025-08-28 21:07:27 - core.managers - DEBUG - <module>:82 - Position sizing não disponível: No module named 'core.managers.position'
+2025-08-28 21:07:27 - core.managers - DEBUG - <module>:88 - Position execution não disponível: No module named 'core.managers.position'
+2025-08-28 21:07:27 - core.managers - DEBUG - <module>:97 - Safety systems não disponíveis: No module named 'core.managers.safety'
+2025-08-28 21:07:27 - core.managers - DEBUG - <module>:106 - Config systems não disponíveis: No module named 'core.managers.config'
+2025-08-28 21:07:27 - core.managers - INFO - <module>:200 - Core module loaded: 0 components available
+2025-08-28 21:07:27 - core - DEBUG - <module>:22 - Base managers importados
+2025-08-28 21:07:27 - core - DEBUG - <module>:28 - PositionManager importado
+2025-08-28 21:07:27 - core - DEBUG - <module>:36 - RiskManager importado de managers
+2025-08-28 21:07:27 - core.analysis - DEBUG - <module>:16 - AnalysisManager importado
+2025-08-28 21:07:27 - core.bot.futures_bot - DEBUG - <module>:19 - MetricsCalculator importado com sucesso
+2025-08-28 21:07:27 - core - DEBUG - <module>:44 - BotFactory importado
+2025-08-28 21:07:27 - core - DEBUG - <module>:52 - AIConfigOptimizer importado
+2025-08-28 21:07:27 - core - DEBUG - <module>:60 - MetricsCalculator importado
+2025-08-28 21:07:27 - core - INFO - <module>:104 - Core module loaded: 8 components available
+2025-08-28 21:07:27 - analysis.regime_detection - INFO - __init__:65 - Regime Detector inicializado - Enabled: True
+2025-08-28 21:07:27 - core.managers.base_manager - INFO - __init__:40 - PositionManager inicializado
+2025-08-28 21:07:27 - core.managers.position_manager - INFO - set_balance:65 - Saldo atualizado: $100.00
+2025-08-28 21:07:27 - core.managers.position_manager - INFO - __init__:39 - PositionManager inicializado - Paper: True
+2025-08-28 21:07:27 - core.managers.risk_manager - INFO - __init__:66 - Risk Manager inicializado:
+2025-08-28 21:07:27 - core.managers.risk_manager - INFO - __init__:67 -   Stop Loss: 1.6% (Trailing: False)
+2025-08-28 21:07:27 - core.managers.risk_manager - INFO - __init__:68 -   Take Profit: 2.8%
+2025-08-28 21:07:27 - core.managers.risk_manager - INFO - __init__:69 -   Limites diários: 25 trades, $30.0 loss
+2025-08-28 21:07:27 - core.managers.position_manager - INFO - set_balance:65 - Saldo atualizado: $100.00
+2025-08-28 21:07:27 - core.analysis.ai_optimizer - INFO - __init__:39 - AI Config Optimizer inicializado
+2025-08-28 21:07:27 - core.analysis.ai_optimizer - INFO - __init__:40 - Snapshots serão salvos em: config/snapshots/
+2025-08-28 21:07:27 - core.analysis.ai_optimizer - INFO - start_monitoring:51 - Monitoramento IA iniciado - Análise a cada hora
+2025-08-28 21:07:27 - core.bot_integrated - INFO - __init__:55 - Sistema de otimização IA ativado
+2025-08-28 21:07:27 - core.bot_integrated - INFO - __init__:64 - Bot integrado inicializado - Modo: PAPER
+2025-08-28 21:07:27 - root - INFO - run:153 - Modo de operação: PAPER TRADING
+2025-08-28 21:07:27 - root - INFO - run:154 - Par principal: BTC/USDT
+2025-08-28 21:07:27 - root - INFO - run:159 - Sistema de otimização IA: ATIVO
+2025-08-28 21:07:27 - root - INFO - run:184 - 🚀 Iniciando loop de trading...
+2025-08-28 21:07:27 - core.bot_integrated - INFO - run:397 - Bot integrado iniciado
+2025-08-28 21:08:18 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para BTC/USDT
+2025-08-28 21:08:18 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.0454161811517001), 'avg_volatility': np.float64(0.0905683548769535), 'volatility_ratio': np.float64(0.5014575037097967), 'volume_ratio': np.float64(1.0294674805304145), 'trend_strength': np.float64(-0.009344089418486167), 'trend_direction': 'neutral', 'atr': np.float64(102.60714285714182)}
+2025-08-28 21:08:18 - analysis.market_analyzer - INFO - analyze_market:207 - Trading bloqueado: Volatilidade muito baixa (0.05%)
+2025-08-28 21:09:08 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para BTC/USDT
+2025-08-28 21:09:08 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.049597819782923214), 'avg_volatility': np.float64(0.09099078622490944), 'volatility_ratio': np.float64(0.5450861767512173), 'volume_ratio': np.float64(1.045403396749797), 'trend_strength': np.float64(-0.04787733435376982), 'trend_direction': 'neutral', 'atr': np.float64(105.87142857142733)}
+2025-08-28 21:09:08 - analysis.market_analyzer - INFO - analyze_market:207 - Trading bloqueado: Volatilidade muito baixa (0.05%)
+2025-08-28 21:09:59 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para BTC/USDT
+2025-08-28 21:09:59 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.050108535976147055), 'avg_volatility': np.float64(0.09104521514738645), 'volatility_ratio': np.float64(0.5503697903841515), 'volume_ratio': np.float64(1.0605571465764123), 'trend_strength': np.float64(-0.05197093543233694), 'trend_direction': 'neutral', 'atr': np.float64(106.03571428571324)}
+2025-08-28 21:09:59 - analysis.market_analyzer - INFO - analyze_market:207 - Trading bloqueado: Volatilidade muito baixa (0.05%)
+2025-08-28 21:10:49 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para BTC/USDT
+2025-08-28 21:10:49 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.04934203690622915), 'avg_volatility': np.float64(0.08839328494059098), 'volatility_ratio': np.float64(0.5582102411896093), 'volume_ratio': np.float64(1.0945017182130583), 'trend_strength': np.float64(-0.03452473323415147), 'trend_direction': 'neutral', 'atr': np.float64(100.67142857142711)}
+2025-08-28 21:10:49 - analysis.market_analyzer - INFO - analyze_market:207 - Trading bloqueado: Volatilidade muito baixa (0.05%)
+2025-08-28 21:11:37 - root - INFO - signal_handler:79 - 
+🛑 Sinal de interrupção recebido...
+2025-08-28 21:11:37 - core.bot_integrated - INFO - shutdown:505 - Desligando bot integrado...
+2025-08-28 21:11:38 - core.analysis.ai_optimizer - INFO - stop_monitoring:58 - Monitoramento IA parado
+2025-08-28 21:11:38 - core.bot_integrated - INFO - shutdown:510 - Sistema IA parado
+2025-08-28 21:11:38 - core.bot_integrated - INFO - print_final_stats:485 - 
+ESTATÍSTICAS FINAIS:
+2025-08-28 21:11:38 - core.bot_integrated - INFO - print_final_stats:488 - Total de trades: 0
+2025-08-28 21:11:38 - core.bot_integrated - INFO - print_final_stats:489 - PnL Total: $+0.00
+2025-08-28 21:11:38 - core.bot_integrated - INFO - print_final_stats:490 - Win Rate: 0.0%
+2025-08-28 21:11:38 - core.bot_integrated - INFO - print_final_stats:491 - Maior ganho: $+0.00
+2025-08-28 21:11:38 - core.bot_integrated - INFO - print_final_stats:492 - Maior perda: $+0.00
+2025-08-28 21:11:38 - core.bot_integrated - INFO - print_final_stats:493 - Max perdas consecutivas: 0
+2025-08-28 21:11:38 - core.bot_integrated - INFO - print_final_stats:494 - Max drawdown: $+0.00
+2025-08-28 21:11:38 - core.bot_integrated - INFO - print_final_stats:500 - Sistema de otimização IA estava ativo durante a execução
+2025-08-28 21:11:38 - core.bot_integrated - INFO - shutdown:521 - Bot integrado finalizado com sucesso
+2025-08-28 21:11:38 - core.bot_integrated - INFO - shutdown:505 - Desligando bot integrado...
+2025-08-28 21:11:38 - core.analysis.ai_optimizer - INFO - stop_monitoring:58 - Monitoramento IA parado
+2025-08-28 21:11:38 - core.bot_integrated - INFO - shutdown:510 - Sistema IA parado
+2025-08-28 21:11:38 - core.bot_integrated - INFO - print_final_stats:485 - 
+ESTATÍSTICAS FINAIS:
+2025-08-28 21:11:38 - core.bot_integrated - INFO - print_final_stats:488 - Total de trades: 0
+2025-08-28 21:11:38 - core.bot_integrated - INFO - print_final_stats:489 - PnL Total: $+0.00
+2025-08-28 21:11:38 - core.bot_integrated - INFO - print_final_stats:490 - Win Rate: 0.0%
+2025-08-28 21:11:38 - core.bot_integrated - INFO - print_final_stats:491 - Maior ganho: $+0.00
+2025-08-28 21:11:38 - core.bot_integrated - INFO - print_final_stats:492 - Maior perda: $+0.00
+2025-08-28 21:11:38 - core.bot_integrated - INFO - print_final_stats:493 - Max perdas consecutivas: 0
+2025-08-28 21:11:38 - core.bot_integrated - INFO - print_final_stats:494 - Max drawdown: $+0.00
+2025-08-28 21:11:38 - core.bot_integrated - INFO - print_final_stats:500 - Sistema de otimização IA estava ativo durante a execução
+2025-08-28 21:11:38 - core.bot_integrated - INFO - shutdown:521 - Bot integrado finalizado com sucesso
+2025-08-28 21:11:38 - core.bot_integrated - INFO - print_final_stats:485 - 
+ESTATÍSTICAS FINAIS:
+2025-08-28 21:11:38 - core.bot_integrated - INFO - print_final_stats:488 - Total de trades: 0
+2025-08-28 21:11:38 - core.bot_integrated - INFO - print_final_stats:489 - PnL Total: $+0.00
+2025-08-28 21:11:38 - core.bot_integrated - INFO - print_final_stats:490 - Win Rate: 0.0%
+2025-08-28 21:11:38 - core.bot_integrated - INFO - print_final_stats:491 - Maior ganho: $+0.00
+2025-08-28 21:11:38 - core.bot_integrated - INFO - print_final_stats:492 - Maior perda: $+0.00
+2025-08-28 21:11:38 - core.bot_integrated - INFO - print_final_stats:493 - Max perdas consecutivas: 0
+2025-08-28 21:11:38 - core.bot_integrated - INFO - print_final_stats:494 - Max drawdown: $+0.00
+2025-08-28 21:11:38 - core.bot_integrated - INFO - print_final_stats:500 - Sistema de otimização IA estava ativo durante a execução
+2025-08-28 21:11:38 - root - INFO - run:209 - Bot finalizado
+2025-08-28 21:15:56 - root - INFO - run:143 - Iniciando BingX Futures Bot v2.2.2
+2025-08-28 21:15:56 - root - INFO - run:147 - 🤖 Inicializando bot...
+2025-08-28 21:15:56 - root - INFO - _initialize_bot:68 - Carregando bot integrado com sistema IA
+2025-08-28 21:15:56 - core.managers - DEBUG - <module>:22 - Base managers não disponíveis: No module named 'core.managers.managers'
+2025-08-28 21:15:56 - core.managers - DEBUG - <module>:28 - PositionManager não disponível: No module named 'core.managers.managers'
+2025-08-28 21:15:56 - core.managers - DEBUG - <module>:40 - BotFactory não disponível: No module named 'core.managers.bot'
+2025-08-28 21:15:56 - core.managers - DEBUG - <module>:46 - BaseBot não disponível: No module named 'core.managers.bot'
+2025-08-28 21:15:56 - core.managers - DEBUG - <module>:52 - FuturesBot não disponível: No module named 'core.managers.bot'
+2025-08-28 21:15:56 - core.managers - DEBUG - <module>:62 - AIConfigOptimizer não disponível: No module named 'core.managers.analysis'
+2025-08-28 21:15:56 - core.managers - DEBUG - <module>:68 - MetricsCalculator não disponível: No module named 'core.managers.analysis'
+2025-08-28 21:15:56 - core.managers - DEBUG - <module>:82 - Position sizing não disponível: No module named 'core.managers.position'
+2025-08-28 21:15:56 - core.managers - DEBUG - <module>:88 - Position execution não disponível: No module named 'core.managers.position'
+2025-08-28 21:15:56 - core.managers - DEBUG - <module>:97 - Safety systems não disponíveis: No module named 'core.managers.safety'
+2025-08-28 21:15:56 - core.managers - DEBUG - <module>:106 - Config systems não disponíveis: No module named 'core.managers.config'
+2025-08-28 21:15:56 - core.managers - INFO - <module>:200 - Core module loaded: 0 components available
+2025-08-28 21:15:56 - core - DEBUG - <module>:22 - Base managers importados
+2025-08-28 21:15:56 - core - DEBUG - <module>:28 - PositionManager importado
+2025-08-28 21:15:56 - core - DEBUG - <module>:36 - RiskManager importado de managers
+2025-08-28 21:15:56 - core.analysis - DEBUG - <module>:16 - AnalysisManager importado
+2025-08-28 21:15:56 - core.bot.futures_bot - DEBUG - <module>:19 - MetricsCalculator importado com sucesso
+2025-08-28 21:15:56 - core - DEBUG - <module>:44 - BotFactory importado
+2025-08-28 21:15:56 - core - DEBUG - <module>:52 - AIConfigOptimizer importado
+2025-08-28 21:15:56 - core - DEBUG - <module>:60 - MetricsCalculator importado
+2025-08-28 21:15:56 - core - INFO - <module>:104 - Core module loaded: 8 components available
+2025-08-28 21:15:56 - analysis.regime_detection - INFO - __init__:65 - Regime Detector inicializado - Enabled: True
+2025-08-28 21:15:56 - core.managers.base_manager - INFO - __init__:40 - PositionManager inicializado
+2025-08-28 21:15:56 - core.managers.position_manager - INFO - set_balance:65 - Saldo atualizado: $100.00
+2025-08-28 21:15:56 - core.managers.position_manager - INFO - __init__:39 - PositionManager inicializado - Paper: True
+2025-08-28 21:15:56 - core.managers.risk_manager - INFO - __init__:66 - Risk Manager inicializado:
+2025-08-28 21:15:56 - core.managers.risk_manager - INFO - __init__:67 -   Stop Loss: 1.6% (Trailing: False)
+2025-08-28 21:15:56 - core.managers.risk_manager - INFO - __init__:68 -   Take Profit: 2.8%
+2025-08-28 21:15:56 - core.managers.risk_manager - INFO - __init__:69 -   Limites diários: 25 trades, $30.0 loss
+2025-08-28 21:15:56 - core.managers.position_manager - INFO - set_balance:65 - Saldo atualizado: $100.00
+2025-08-28 21:15:56 - core.analysis.ai_optimizer - INFO - __init__:39 - AI Config Optimizer inicializado
+2025-08-28 21:15:56 - core.analysis.ai_optimizer - INFO - __init__:40 - Snapshots serão salvos em: config/snapshots/
+2025-08-28 21:15:56 - core.analysis.ai_optimizer - INFO - start_monitoring:51 - Monitoramento IA iniciado - Análise a cada hora
+2025-08-28 21:15:56 - core.bot_integrated - INFO - __init__:55 - Sistema de otimização IA ativado
+2025-08-28 21:15:56 - core.bot_integrated - INFO - __init__:64 - Bot integrado inicializado - Modo: PAPER
+2025-08-28 21:15:56 - root - INFO - run:153 - Modo de operação: PAPER TRADING
+2025-08-28 21:15:56 - root - INFO - run:154 - Par principal: BTC/USDT
+2025-08-28 21:15:56 - root - INFO - run:159 - Sistema de otimização IA: ATIVO
+2025-08-28 21:15:56 - root - INFO - run:184 - 🚀 Iniciando loop de trading...
+2025-08-28 21:15:56 - core.bot_integrated - INFO - run:397 - Bot integrado iniciado
+2025-08-28 21:16:47 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para BTC/USDT
+2025-08-28 21:16:47 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.05051331173446737), 'avg_volatility': np.float64(0.08852938630700985), 'volatility_ratio': np.float64(0.5705824228724793), 'volume_ratio': np.float64(1.1733435563222796), 'trend_strength': np.float64(0.02100917014668658), 'trend_direction': 'neutral', 'atr': np.float64(109.85714285714286)}
+2025-08-28 21:16:47 - analysis.market_analyzer - INFO - analyze_market:207 - Trading bloqueado: Volatilidade muito baixa (0.05%)
+2025-08-28 21:17:37 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para BTC/USDT
+2025-08-28 21:17:37 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.05150504574446082), 'avg_volatility': np.float64(0.08865944866187121), 'volatility_ratio': np.float64(0.5809312658923743), 'volume_ratio': np.float64(1.2062770357740518), 'trend_strength': np.float64(0.0863512501791566), 'trend_direction': 'neutral', 'atr': np.float64(109.85714285714286)}
+2025-08-28 21:17:37 - analysis.market_analyzer - INFO - analyze_market:207 - Trading bloqueado: Volatilidade muito baixa (0.05%)
+2025-08-28 21:18:28 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para BTC/USDT
+2025-08-28 21:18:28 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.05264068053258661), 'avg_volatility': np.float64(0.0887986521459794), 'volatility_ratio': np.float64(0.5928094544278515), 'volume_ratio': np.float64(1.2568594016431562), 'trend_strength': np.float64(0.10664824506663104), 'trend_direction': 'neutral', 'atr': np.float64(111.34285714285632)}
+2025-08-28 21:18:28 - analysis.market_analyzer - INFO - analyze_market:207 - Trading bloqueado: Volatilidade muito baixa (0.05%)
+2025-08-28 21:19:18 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para BTC/USDT
+2025-08-28 21:19:18 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.05335741793770227), 'avg_volatility': np.float64(0.08888734747362287), 'volatility_ratio': np.float64(0.6002813612312592), 'volume_ratio': np.float64(1.2636462038039278), 'trend_strength': np.float64(0.11697478632517454), 'trend_direction': 'neutral', 'atr': np.float64(111.97857142857121)}
+2025-08-28 21:19:18 - analysis.market_analyzer - INFO - analyze_market:207 - Trading bloqueado: Volatilidade muito baixa (0.05%)
+2025-08-28 21:20:09 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para BTC/USDT
+2025-08-28 21:20:09 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.05379370864643096), 'avg_volatility': np.float64(0.08885573535656538), 'volatility_ratio': np.float64(0.6054050245666697), 'volume_ratio': np.float64(1.0216714248637424), 'trend_strength': np.float64(0.10109216918344564), 'trend_direction': 'neutral', 'atr': np.float64(105.12857142857163)}
+2025-08-28 21:20:09 - analysis.market_analyzer - INFO - analyze_market:207 - Trading bloqueado: Volatilidade muito baixa (0.05%)
+2025-08-28 21:20:34 - root - INFO - signal_handler:79 - 
+🛑 Sinal de interrupção recebido...
+2025-08-28 21:20:34 - core.bot_integrated - INFO - shutdown:505 - Desligando bot integrado...
+2025-08-28 21:20:34 - core.analysis.ai_optimizer - INFO - stop_monitoring:58 - Monitoramento IA parado
+2025-08-28 21:20:34 - core.bot_integrated - INFO - shutdown:510 - Sistema IA parado
+2025-08-28 21:20:34 - core.bot_integrated - INFO - print_final_stats:485 - 
+ESTATÍSTICAS FINAIS:
+2025-08-28 21:20:34 - core.bot_integrated - INFO - print_final_stats:488 - Total de trades: 0
+2025-08-28 21:20:34 - core.bot_integrated - INFO - print_final_stats:489 - PnL Total: $+0.00
+2025-08-28 21:20:34 - core.bot_integrated - INFO - print_final_stats:490 - Win Rate: 0.0%
+2025-08-28 21:20:34 - core.bot_integrated - INFO - print_final_stats:491 - Maior ganho: $+0.00
+2025-08-28 21:20:34 - core.bot_integrated - INFO - print_final_stats:492 - Maior perda: $+0.00
+2025-08-28 21:20:34 - core.bot_integrated - INFO - print_final_stats:493 - Max perdas consecutivas: 0
+2025-08-28 21:20:34 - core.bot_integrated - INFO - print_final_stats:494 - Max drawdown: $+0.00
+2025-08-28 21:20:34 - core.bot_integrated - INFO - print_final_stats:500 - Sistema de otimização IA estava ativo durante a execução
+2025-08-28 21:20:34 - core.bot_integrated - INFO - shutdown:521 - Bot integrado finalizado com sucesso
+2025-08-28 21:20:34 - core.bot_integrated - INFO - shutdown:505 - Desligando bot integrado...
+2025-08-28 21:20:34 - core.analysis.ai_optimizer - INFO - stop_monitoring:58 - Monitoramento IA parado
+2025-08-28 21:20:34 - core.bot_integrated - INFO - shutdown:510 - Sistema IA parado
+2025-08-28 21:20:34 - core.bot_integrated - INFO - print_final_stats:485 - 
+ESTATÍSTICAS FINAIS:
+2025-08-28 21:20:34 - core.bot_integrated - INFO - print_final_stats:488 - Total de trades: 0
+2025-08-28 21:20:34 - core.bot_integrated - INFO - print_final_stats:489 - PnL Total: $+0.00
+2025-08-28 21:20:34 - core.bot_integrated - INFO - print_final_stats:490 - Win Rate: 0.0%
+2025-08-28 21:20:34 - core.bot_integrated - INFO - print_final_stats:491 - Maior ganho: $+0.00
+2025-08-28 21:20:34 - core.bot_integrated - INFO - print_final_stats:492 - Maior perda: $+0.00
+2025-08-28 21:20:34 - core.bot_integrated - INFO - print_final_stats:493 - Max perdas consecutivas: 0
+2025-08-28 21:20:34 - core.bot_integrated - INFO - print_final_stats:494 - Max drawdown: $+0.00
+2025-08-28 21:20:34 - core.bot_integrated - INFO - print_final_stats:500 - Sistema de otimização IA estava ativo durante a execução
+2025-08-28 21:20:34 - core.bot_integrated - INFO - shutdown:521 - Bot integrado finalizado com sucesso
+2025-08-28 21:20:34 - core.bot_integrated - INFO - print_final_stats:485 - 
+ESTATÍSTICAS FINAIS:
+2025-08-28 21:20:34 - core.bot_integrated - INFO - print_final_stats:488 - Total de trades: 0
+2025-08-28 21:20:34 - core.bot_integrated - INFO - print_final_stats:489 - PnL Total: $+0.00
+2025-08-28 21:20:34 - core.bot_integrated - INFO - print_final_stats:490 - Win Rate: 0.0%
+2025-08-28 21:20:34 - core.bot_integrated - INFO - print_final_stats:491 - Maior ganho: $+0.00
+2025-08-28 21:20:34 - core.bot_integrated - INFO - print_final_stats:492 - Maior perda: $+0.00
+2025-08-28 21:20:34 - core.bot_integrated - INFO - print_final_stats:493 - Max perdas consecutivas: 0
+2025-08-28 21:20:34 - core.bot_integrated - INFO - print_final_stats:494 - Max drawdown: $+0.00
+2025-08-28 21:20:34 - core.bot_integrated - INFO - print_final_stats:500 - Sistema de otimização IA estava ativo durante a execução
+2025-08-28 21:20:34 - root - INFO - run:209 - Bot finalizado
+2025-08-28 21:20:35 - root - INFO - run:143 - Iniciando BingX Futures Bot v2.2.1
+2025-08-28 21:20:35 - root - INFO - run:147 - 🤖 Inicializando bot...
+2025-08-28 21:20:35 - root - INFO - _initialize_bot:68 - Carregando bot integrado com sistema IA
+2025-08-28 21:20:35 - core.managers - DEBUG - <module>:22 - Base managers não disponíveis: No module named 'core.managers.managers'
+2025-08-28 21:20:35 - core.managers - DEBUG - <module>:28 - PositionManager não disponível: No module named 'core.managers.managers'
+2025-08-28 21:20:35 - core.managers - DEBUG - <module>:40 - BotFactory não disponível: No module named 'core.managers.bot'
+2025-08-28 21:20:35 - core.managers - DEBUG - <module>:46 - BaseBot não disponível: No module named 'core.managers.bot'
+2025-08-28 21:20:35 - core.managers - DEBUG - <module>:52 - FuturesBot não disponível: No module named 'core.managers.bot'
+2025-08-28 21:20:35 - core.managers - DEBUG - <module>:62 - AIConfigOptimizer não disponível: No module named 'core.managers.analysis'
+2025-08-28 21:20:35 - core.managers - DEBUG - <module>:68 - MetricsCalculator não disponível: No module named 'core.managers.analysis'
+2025-08-28 21:20:35 - core.managers - DEBUG - <module>:82 - Position sizing não disponível: No module named 'core.managers.position'
+2025-08-28 21:20:35 - core.managers - DEBUG - <module>:88 - Position execution não disponível: No module named 'core.managers.position'
+2025-08-28 21:20:35 - core.managers - DEBUG - <module>:97 - Safety systems não disponíveis: No module named 'core.managers.safety'
+2025-08-28 21:20:35 - core.managers - DEBUG - <module>:106 - Config systems não disponíveis: No module named 'core.managers.config'
+2025-08-28 21:20:35 - core.managers - INFO - <module>:200 - Core module loaded: 0 components available
+2025-08-28 21:20:35 - core - DEBUG - <module>:22 - Base managers importados
+2025-08-28 21:20:35 - core - DEBUG - <module>:28 - PositionManager importado
+2025-08-28 21:20:35 - core - DEBUG - <module>:36 - RiskManager importado de managers
+2025-08-28 21:20:35 - core.analysis - DEBUG - <module>:16 - AnalysisManager importado
+2025-08-28 21:20:35 - core.bot.futures_bot - DEBUG - <module>:19 - MetricsCalculator importado com sucesso
+2025-08-28 21:20:35 - core - DEBUG - <module>:44 - BotFactory importado
+2025-08-28 21:20:35 - core - DEBUG - <module>:52 - AIConfigOptimizer importado
+2025-08-28 21:20:35 - core - DEBUG - <module>:60 - MetricsCalculator importado
+2025-08-28 21:20:35 - core - INFO - <module>:104 - Core module loaded: 8 components available
+2025-08-28 21:20:35 - analysis.regime_detection - INFO - __init__:65 - Regime Detector inicializado - Enabled: True
+2025-08-28 21:20:35 - core.managers.base_manager - INFO - __init__:40 - PositionManager inicializado
+2025-08-28 21:20:35 - core.managers.position_manager - INFO - set_balance:65 - Saldo atualizado: $100.00
+2025-08-28 21:20:35 - core.managers.position_manager - INFO - __init__:39 - PositionManager inicializado - Paper: True
+2025-08-28 21:20:35 - core.managers.risk_manager - INFO - __init__:66 - Risk Manager inicializado:
+2025-08-28 21:20:35 - core.managers.risk_manager - INFO - __init__:67 -   Stop Loss: 1.8% (Trailing: False)
+2025-08-28 21:20:35 - core.managers.risk_manager - INFO - __init__:68 -   Take Profit: 3.2%
+2025-08-28 21:20:35 - core.managers.risk_manager - INFO - __init__:69 -   Limites diários: 50 trades, $25.0 loss
+2025-08-28 21:20:35 - core.managers.position_manager - INFO - set_balance:65 - Saldo atualizado: $100.00
+2025-08-28 21:20:35 - core.analysis.ai_optimizer - INFO - __init__:39 - AI Config Optimizer inicializado
+2025-08-28 21:20:35 - core.analysis.ai_optimizer - INFO - __init__:40 - Snapshots serão salvos em: config/snapshots/
+2025-08-28 21:20:35 - core.analysis.ai_optimizer - INFO - start_monitoring:51 - Monitoramento IA iniciado - Análise a cada hora
+2025-08-28 21:20:35 - core.bot_integrated - INFO - __init__:55 - Sistema de otimização IA ativado
+2025-08-28 21:20:35 - core.bot_integrated - INFO - __init__:64 - Bot integrado inicializado - Modo: PAPER
+2025-08-28 21:20:35 - root - INFO - run:153 - Modo de operação: PAPER TRADING
+2025-08-28 21:20:35 - root - INFO - run:154 - Par principal: SOL/USDT
+2025-08-28 21:20:35 - root - INFO - run:159 - Sistema de otimização IA: ATIVO
+2025-08-28 21:20:35 - root - INFO - run:184 - 🚀 Iniciando loop de trading...
+2025-08-28 21:20:35 - core.bot_integrated - INFO - run:397 - Bot integrado iniciado
+2025-08-28 21:21:01 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para SOL/USDT
+2025-08-28 21:21:01 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.20636525336123743), 'avg_volatility': np.float64(0.29818133550135895), 'volatility_ratio': np.float64(0.6920797138903985), 'volume_ratio': np.float64(1.1772712183246652), 'trend_strength': np.float64(0.1952924726170975), 'trend_direction': 'neutral', 'atr': np.float64(0.6935714285714211)}
+2025-08-28 21:21:01 - analysis.market_analyzer - INFO - analyze_market:207 - Trading bloqueado: Volatilidade muito baixa (0.21%)
+2025-08-28 21:21:26 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para SOL/USDT
+2025-08-28 21:21:26 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.21082339798920402), 'avg_volatility': np.float64(0.29880436093685137), 'volatility_ratio': np.float64(0.7055566301917493), 'volume_ratio': np.float64(1.1972905713861925), 'trend_strength': np.float64(0.12537869960381123), 'trend_direction': 'neutral', 'atr': np.float64(0.6964999999999922)}
+2025-08-28 21:21:26 - analysis.market_analyzer - INFO - analyze_market:207 - Trading bloqueado: Volatilidade muito baixa (0.21%)
+2025-08-28 21:21:52 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para SOL/USDT
+2025-08-28 21:21:52 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.212756088836972), 'avg_volatility': np.float64(0.2990786047839191), 'volatility_ratio': np.float64(0.7113718114028446), 'volume_ratio': np.float64(1.2144904589009309), 'trend_strength': np.float64(0.09927755767885986), 'trend_direction': 'neutral', 'atr': np.float64(0.7057142857142773)}
+2025-08-28 21:21:52 - analysis.market_analyzer - INFO - analyze_market:207 - Trading bloqueado: Volatilidade muito baixa (0.21%)
+2025-08-28 21:22:18 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para SOL/USDT
+2025-08-28 21:22:18 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.21000679700583438), 'avg_volatility': np.float64(0.29868922766894945), 'volatility_ratio': np.float64(0.7030946467161991), 'volume_ratio': np.float64(1.2269359756926137), 'trend_strength': np.float64(0.13703099510602781), 'trend_direction': 'neutral', 'atr': np.float64(0.7115714285714217)}
+2025-08-28 21:22:18 - analysis.market_analyzer - INFO - analyze_market:207 - Trading bloqueado: Volatilidade muito baixa (0.21%)
+2025-08-28 21:22:43 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para SOL/USDT
+2025-08-28 21:22:43 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.2113610872121889), 'avg_volatility': np.float64(0.2988804116150061), 'volatility_ratio': np.float64(0.7071761112416005), 'volume_ratio': np.float64(1.2483833213779119), 'trend_strength': np.float64(0.11792123048239847), 'trend_direction': 'neutral', 'atr': np.float64(0.7115714285714217)}
+2025-08-28 21:22:43 - analysis.market_analyzer - INFO - analyze_market:207 - Trading bloqueado: Volatilidade muito baixa (0.21%)
+2025-08-28 21:23:09 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para SOL/USDT
+2025-08-28 21:23:09 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.2138121941355963), 'avg_volatility': np.float64(0.29922949045102243), 'volatility_ratio': np.float64(0.714542519901102), 'volume_ratio': np.float64(1.2611461548785399), 'trend_strength': np.float64(0.0857608948962934), 'trend_direction': 'neutral', 'atr': np.float64(0.7115714285714217)}
+2025-08-28 21:23:09 - analysis.market_analyzer - INFO - analyze_market:207 - Trading bloqueado: Volatilidade muito baixa (0.21%)
+2025-08-28 21:23:34 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para SOL/USDT
+2025-08-28 21:23:34 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.2160347717878856), 'avg_volatility': np.float64(0.2995493669848112), 'volatility_ratio': np.float64(0.72119922656635), 'volume_ratio': np.float64(1.278459404672997), 'trend_strength': np.float64(0.05872756933114721), 'trend_direction': 'neutral', 'atr': np.float64(0.7115714285714217)}
+2025-08-28 21:23:34 - analysis.market_analyzer - INFO - analyze_market:207 - Trading bloqueado: Volatilidade muito baixa (0.22%)
+2025-08-28 21:24:00 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para SOL/USDT
+2025-08-28 21:24:00 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.21187575474419096), 'avg_volatility': np.float64(0.2989533843227475), 'volatility_ratio': np.float64(0.7087250583370274), 'volume_ratio': np.float64(1.2843120555295318), 'trend_strength': np.float64(0.11092985318107645), 'trend_direction': 'neutral', 'atr': np.float64(0.7115714285714217)}
+2025-08-28 21:24:00 - analysis.market_analyzer - INFO - analyze_market:207 - Trading bloqueado: Volatilidade muito baixa (0.21%)
+2025-08-28 21:24:25 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para SOL/USDT
+2025-08-28 21:24:25 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.21173751293572557), 'avg_volatility': np.float64(0.29893376648988934), 'volatility_ratio': np.float64(0.7083091195148977), 'volume_ratio': np.float64(1.2945655862888175), 'trend_strength': np.float64(0.11279422046142633), 'trend_direction': 'neutral', 'atr': np.float64(0.7115714285714217)}
+2025-08-28 21:24:25 - analysis.market_analyzer - INFO - analyze_market:207 - Trading bloqueado: Volatilidade muito baixa (0.21%)
+2025-08-28 21:24:51 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para SOL/USDT
+2025-08-28 21:24:51 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.20852049931179145), 'avg_volatility': np.float64(0.29848082355363115), 'volatility_ratio': np.float64(0.6986060170606719), 'volume_ratio': np.float64(1.3154920387695612), 'trend_strength': np.float64(0.15940340247027943), 'trend_direction': 'neutral', 'atr': np.float64(0.7115714285714217)}
+2025-08-28 21:24:51 - analysis.market_analyzer - INFO - analyze_market:207 - Trading bloqueado: Volatilidade muito baixa (0.21%)
+2025-08-28 21:25:16 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para SOL/USDT
+2025-08-28 21:25:16 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.21048816263457693), 'avg_volatility': np.float64(0.2969477014925327), 'volatility_ratio': np.float64(0.7088391712635299), 'volume_ratio': np.float64(1.1896247410022254), 'trend_strength': np.float64(0.4168864696298444), 'trend_direction': 'neutral', 'atr': np.float64(0.694357142857135)}
+2025-08-28 21:25:16 - analysis.market_analyzer - INFO - analyze_market:207 - Trading bloqueado: Volatilidade muito baixa (0.21%)
+2025-08-28 21:25:42 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para SOL/USDT
+2025-08-28 21:25:42 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.21243643202592025), 'avg_volatility': np.float64(0.29721868940332175), 'volatility_ratio': np.float64(0.714747893049373), 'volume_ratio': np.float64(1.1987149366756635), 'trend_strength': np.float64(0.4794427819819218), 'trend_direction': 'neutral', 'atr': np.float64(0.7077142857142787)}
+2025-08-28 21:25:42 - analysis.market_analyzer - INFO - analyze_market:207 - Trading bloqueado: Volatilidade muito baixa (0.21%)
+2025-08-28 21:26:07 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para SOL/USDT
+2025-08-28 21:26:07 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.21339242475864045), 'avg_volatility': np.float64(0.2973535894705187), 'volatility_ratio': np.float64(0.717638637349617), 'volume_ratio': np.float64(1.2052655964677987), 'trend_strength': np.float64(0.5027846895759701), 'trend_direction': 'up', 'atr': np.float64(0.7084285714285637)}
+2025-08-28 21:26:07 - analysis.market_analyzer - INFO - analyze_market:207 - Trading bloqueado: Volatilidade muito baixa (0.21%)
+2025-08-28 21:26:32 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para SOL/USDT
+2025-08-28 21:26:32 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.2136610400985962), 'avg_volatility': np.float64(0.2973916661703888), 'volatility_ratio': np.float64(0.7184499917229704), 'volume_ratio': np.float64(1.2194219828731647), 'trend_strength': np.float64(0.5088535855504271), 'trend_direction': 'up', 'atr': np.float64(0.7084999999999927)}
+2025-08-28 21:26:32 - analysis.market_analyzer - INFO - analyze_market:207 - Trading bloqueado: Volatilidade muito baixa (0.21%)
+2025-08-28 21:26:58 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para SOL/USDT
+2025-08-28 21:26:58 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.2153948135683801), 'avg_volatility': np.float64(0.29763903265301495), 'volatility_ratio': np.float64(0.723677978820357), 'volume_ratio': np.float64(1.2276163388019508), 'trend_strength': np.float64(0.5443332850933895), 'trend_direction': 'up', 'atr': np.float64(0.7209999999999914)}
+2025-08-28 21:26:58 - analysis.market_analyzer - INFO - analyze_market:207 - Trading bloqueado: Volatilidade muito baixa (0.22%)
+2025-08-28 21:27:24 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para SOL/USDT
+2025-08-28 21:27:24 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.21788855950770686), 'avg_volatility': np.float64(0.29799915438145075), 'volatility_ratio': np.float64(0.7311717375841975), 'volume_ratio': np.float64(1.2380854903439547), 'trend_strength': np.float64(0.5877492332183424), 'trend_direction': 'up', 'atr': np.float64(0.7212857142857071)}
+2025-08-28 21:27:24 - analysis.market_analyzer - INFO - analyze_market:207 - Trading bloqueado: Volatilidade muito baixa (0.22%)
+2025-08-28 21:27:49 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para SOL/USDT
+2025-08-28 21:27:49 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.22703531372511546), 'avg_volatility': np.float64(0.2993575600761648), 'volatility_ratio': np.float64(0.7584084853823347), 'volume_ratio': np.float64(1.26168718455417), 'trend_strength': np.float64(0.7105276671630805), 'trend_direction': 'up', 'atr': np.float64(0.7442857142857073)}
+2025-08-28 21:27:49 - analysis.market_analyzer - INFO - analyze_market:207 - Trading bloqueado: Volatilidade muito baixa (0.23%)
+2025-08-28 21:28:15 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para SOL/USDT
+2025-08-28 21:28:15 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.256364144955814), 'avg_volatility': np.float64(0.30406519755622013), 'volatility_ratio': np.float64(0.8431222876416613), 'volume_ratio': np.float64(1.348496366974375), 'trend_strength': np.float64(0.9798932807984884), 'trend_direction': 'up', 'atr': np.float64(0.7881428571428485)}
+2025-08-28 21:28:15 - analysis.market_analyzer - INFO - analyze_market:207 - Trading bloqueado: Volatilidade muito baixa (0.26%)
+2025-08-28 21:28:40 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para SOL/USDT
+2025-08-28 21:28:40 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.26846651878523664), 'avg_volatility': np.float64(0.3061551409166875), 'volatility_ratio': np.float64(0.8768969809926959), 'volume_ratio': np.float64(1.3690956952775823), 'trend_strength': np.float64(1.0699930441115377), 'trend_direction': 'up', 'atr': np.float64(0.7942857142857065)}
+2025-08-28 21:28:40 - analysis.market_analyzer - INFO - analyze_market:207 - Trading bloqueado: Volatilidade muito baixa (0.27%)
+2025-08-28 21:29:06 - analysis.market_analyzer - INFO - fetch_market_data:136 - Dados obtidos: 100 velas para SOL/USDT
+2025-08-28 21:29:06 - analysis.market_analyzer - DEBUG - calculate_market_conditions:179 - Condições do mercado: {'current_volatility': np.float64(0.30529172866081294), 'avg_volatility': np.float64(0.31301480969704387), 'volatility_ratio': np.float64(0.9753267871136646), 'volume_ratio': np.float64(1.4836911177203882), 'trend_strength': np.float64(1.3127488830897271), 'trend_direction': 'up', 'atr': np.float64(0.8450714285714217)}
+2025-08-28 21:29:08 - analysis.regime_detection - INFO - analyze_market_regime:131 - Regime detectado para SOL/USDT: ranging (confiança: 0.60)
+2025-08-28 21:29:08 - analysis.technical_analysis - INFO - calculate_technical_indicators:128 - RSI: 70.7 (Média 3: 63.5)
+2025-08-28 21:29:08 - analysis.technical_analysis - INFO - calculate_technical_indicators:154 - MACD Hist: 0.1418
+2025-08-28 21:29:08 - analysis.technical_analysis - INFO - calculate_technical_indicators:194 - EMA Trend: strong_bullish (Diff: 0.27%)
+2025-08-28 21:29:08 - analysis.technical_analysis - INFO - calculate_technical_indicators:221 - BB Position: 1.36
+2025-08-28 21:29:08 - analysis.technical_analysis - INFO - calculate_technical_indicators:236 - Momentum: 1.21%
+2025-08-28 21:29:08 - analysis.technical_analysis - INFO - calculate_technical_indicators:246 - Volatilidade: 0.30%
+2025-08-28 21:29:08 - analysis.technical_analysis - INFO - calculate_technical_indicators:251 - Indicadores calculados: 39 indicadores
+2025-08-28 21:29:08 - analysis.technical_analysis - INFO - generate_trading_signal:463 - ANÁLISE DE SCORES:
+2025-08-28 21:29:08 - analysis.technical_analysis - INFO - generate_trading_signal:464 -    Long: 10 pontos | Short: 4 pontos
+2025-08-28 21:29:08 - analysis.technical_analysis - INFO - generate_trading_signal:499 - SINAL LONG VALIDADO #1
+2025-08-28 21:29:08 - analysis.technical_analysis - INFO - generate_trading_signal:500 -    Score: 10 pontos
+2025-08-28 21:29:08 - analysis.technical_analysis - INFO - generate_trading_signal:501 -    Confiança: 95.0%
+2025-08-28 21:29:08 - analysis.technical_analysis - INFO - generate_trading_signal:502 -    Força: STRONG
+2025-08-28 21:29:08 - analysis.technical_analysis - INFO - generate_trading_signal:503 -    Razões: MACD forte bullish | EMA forte bullish | Momentum bullish
+2025-08-28 21:29:08 - analysis.market_analyzer - INFO - _generate_regime_aware_signal:278 - Sinal regime-aware: long (regime: ranging)
+2025-08-28 21:29:08 - analysis.market_analyzer - INFO - _generate_regime_aware_signal:279 -   Regime confiança: 0.60
+2025-08-28 21:29:08 - analysis.market_analyzer - INFO - _generate_regime_aware_signal:280 -   Trend strength: 0.00
+2025-08-28 21:29:08 - core.bot_integrated - INFO - _check_entry_opportunity:316 - Sinal validado: LONG
+2025-08-28 21:29:08 - core.managers.position_manager - INFO - open_position:164 - Posição aberta: SOL/USDT LONG 0.009215782949879963 @ $217.0190
+2025-08-28 21:29:08 - core.bot_integrated - INFO - _execute_entry:340 - Posição aberta com sucesso!
+2025-08-28 21:29:08 - utils.csv_logger - DEBUG - _debug_trade_structure:61 - === DEBUG TRADE STRUCTURE ===
+2025-08-28 21:29:08 - utils.csv_logger - DEBUG - _debug_trade_structure:62 - Trade type: <class 'dict'>
+2025-08-28 21:29:08 - utils.csv_logger - DEBUG - _debug_trade_structure:65 - Trade dict keys: ['symbol', 'side', 'action', 'quantity', 'entry_price', 'pnl', 'entry_time', 'reason']
+2025-08-28 21:29:08 - utils.csv_logger - DEBUG - _debug_trade_structure:66 - Trade dict content: {'symbol': 'SOL/USDT', 'side': 'long', 'action': 'open', 'quantity': 0.009215782949879963, 'entry_price': 217.019, 'pnl': 0.0, 'entry_time': datetime.datetime(2025, 8, 28, 21, 29, 8, 82178), 'reason': 'MACD forte bullish | EMA forte bullish | Momentum bullish (ranging - confiança reduzida)'}
+2025-08-28 21:29:08 - utils.csv_logger - DEBUG - _debug_trade_structure:80 - Trade_data keys: ['trade']
+2025-08-28 21:29:08 - utils.csv_logger - DEBUG - _debug_trade_structure:81 - === END DEBUG ===
+2025-08-28 21:29:08 - utils.csv_logger - DEBUG - _debug_trade_structure:61 - === DEBUG TRADE STRUCTURE ===
+2025-08-28 21:29:08 - utils.csv_logger - DEBUG - _debug_trade_structure:62 - Trade type: <class 'dict'>
+2025-08-28 21:29:08 - utils.csv_logger - DEBUG - _debug_trade_structure:65 - Trade dict keys: ['symbol', 'side', 'action', 'quantity', 'entry_price', 'pnl', 'entry_time', 'reason']
+2025-08-28 21:29:08 - utils.csv_logger - DEBUG - _debug_trade_structure:66 - Trade dict content: {'symbol': 'SOL/USDT', 'side': 'long', 'action': 'open', 'quantity': 0.009215782949879963, 'entry_price': 217.019, 'pnl': 0.0, 'entry_time': datetime.datetime(2025, 8, 28, 21, 29, 8, 82178), 'reason': 'MACD forte bullish | EMA forte bullish | Momentum bullish (ranging - confiança reduzida)'}
+2025-08-28 21:29:08 - utils.csv_logger - DEBUG - _debug_trade_structure:80 - Trade_data keys: ['trade', 'predicted_tp', 'predicted_sl', 'current_price_at_entry', 'signal_confidence', 'signal_reason']
+2025-08-28 21:29:08 - utils.csv_logger - DEBUG - _debug_trade_structure:81 - === END DEBUG ===
+2025-08-28 21:29:08 - utils.csv_logger - DEBUG - log_trade_extended:135 - Trade logado no CSV: SOL/USDT - open
+2025-08-28 21:29:34 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 217.817
+2025-08-28 21:29:34 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:30:00 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 217.31
+2025-08-28 21:30:00 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:30:25 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 216.761
+2025-08-28 21:30:25 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:30:50 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 216.218
+2025-08-28 21:30:50 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:31:16 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.446
+2025-08-28 21:31:16 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:31:41 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.735
+2025-08-28 21:31:41 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:32:07 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 216.363
+2025-08-28 21:32:07 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:32:32 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 216.122
+2025-08-28 21:32:32 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:32:58 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.843
+2025-08-28 21:32:58 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:33:23 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.818
+2025-08-28 21:33:23 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:33:49 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.606
+2025-08-28 21:33:49 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:34:14 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.411
+2025-08-28 21:34:14 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:34:40 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.437
+2025-08-28 21:34:40 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:35:05 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.447
+2025-08-28 21:35:05 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:35:31 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.397
+2025-08-28 21:35:31 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:35:56 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.676
+2025-08-28 21:35:56 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:36:21 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 216.074
+2025-08-28 21:36:21 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:36:47 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.945
+2025-08-28 21:36:47 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:37:13 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 216.226
+2025-08-28 21:37:13 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:37:40 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 216.087
+2025-08-28 21:37:40 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:38:05 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.846
+2025-08-28 21:38:05 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:38:30 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.649
+2025-08-28 21:38:30 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:38:56 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.249
+2025-08-28 21:38:56 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:39:21 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.506
+2025-08-28 21:39:21 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:39:47 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.746
+2025-08-28 21:39:47 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:40:12 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.569
+2025-08-28 21:40:12 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:40:38 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.439
+2025-08-28 21:40:38 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:41:03 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.398
+2025-08-28 21:41:03 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:41:29 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.538
+2025-08-28 21:41:29 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:41:54 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.528
+2025-08-28 21:41:54 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:42:20 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.619
+2025-08-28 21:42:20 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:42:45 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.199
+2025-08-28 21:42:45 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:43:10 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 214.868
+2025-08-28 21:43:10 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:43:36 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.162
+2025-08-28 21:43:36 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:44:01 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.345
+2025-08-28 21:44:01 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:44:27 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.344
+2025-08-28 21:44:27 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:44:52 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.126
+2025-08-28 21:44:52 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:45:18 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.02
+2025-08-28 21:45:18 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:45:43 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 214.708
+2025-08-28 21:45:43 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:46:08 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.308
+2025-08-28 21:46:08 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:46:34 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.062
+2025-08-28 21:46:34 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:46:59 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.064
+2025-08-28 21:46:59 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:47:25 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.095
+2025-08-28 21:47:25 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:47:50 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.163
+2025-08-28 21:47:50 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:48:17 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.015
+2025-08-28 21:48:17 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:48:42 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 214.958
+2025-08-28 21:48:42 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:49:08 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 214.85
+2025-08-28 21:49:08 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:49:33 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 214.81
+2025-08-28 21:49:33 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:49:59 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 214.96
+2025-08-28 21:49:59 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:50:25 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.105
+2025-08-28 21:50:25 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:50:50 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.061
+2025-08-28 21:50:50 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:51:16 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 215.033
+2025-08-28 21:51:16 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:51:41 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 214.952
+2025-08-28 21:51:41 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:52:06 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 214.869
+2025-08-28 21:52:06 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:52:32 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 214.972
+2025-08-28 21:52:32 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:52:57 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 214.964
+2025-08-28 21:52:57 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:53:23 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 214.643
+2025-08-28 21:53:23 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:53:48 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 214.623
+2025-08-28 21:53:48 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:54:14 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 214.246
+2025-08-28 21:54:14 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:54:39 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 214.233
+2025-08-28 21:54:39 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:55:05 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 214.293
+2025-08-28 21:55:05 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:55:30 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 214.425
+2025-08-28 21:55:30 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:55:56 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 214.408
+2025-08-28 21:55:56 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:56:21 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 214.443
+2025-08-28 21:56:21 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:56:47 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 214.555
+2025-08-28 21:56:47 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:57:12 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 214.495
+2025-08-28 21:57:12 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:57:37 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 214.533
+2025-08-28 21:57:37 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:58:03 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 214.533
+2025-08-28 21:58:03 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:58:28 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 214.697
+2025-08-28 21:58:28 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:58:54 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 214.814
+2025-08-28 21:58:54 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:59:19 - analysis.market_analyzer - DEBUG - get_current_price:82 - Preço atual SOL/USDT: 214.78
+2025-08-28 21:59:19 - core.bot_integrated - ERROR - run_trading_cycle:234 - Erro no ciclo de trading: 'PositionManager' object has no attribute 'should_close_by_timing'
+2025-08-28 21:59:26 - root - INFO - signal_handler:79 - 
+🛑 Sinal de interrupção recebido...
+2025-08-28 21:59:26 - core.bot_integrated - INFO - shutdown:505 - Desligando bot integrado...
+2025-08-28 21:59:27 - core.analysis.ai_optimizer - INFO - stop_monitoring:58 - Monitoramento IA parado
+2025-08-28 21:59:27 - core.bot_integrated - INFO - shutdown:510 - Sistema IA parado
+2025-08-28 21:59:27 - core.bot_integrated - INFO - print_final_stats:485 - 
+ESTATÍSTICAS FINAIS:
+2025-08-28 21:59:27 - core.bot_integrated - INFO - print_final_stats:488 - Total de trades: 0
+2025-08-28 21:59:27 - core.bot_integrated - INFO - print_final_stats:489 - PnL Total: $+0.00
+2025-08-28 21:59:27 - core.bot_integrated - INFO - print_final_stats:490 - Win Rate: 0.0%
+2025-08-28 21:59:27 - core.bot_integrated - INFO - print_final_stats:491 - Maior ganho: $+0.00
+2025-08-28 21:59:27 - core.bot_integrated - INFO - print_final_stats:492 - Maior perda: $+0.00
+2025-08-28 21:59:27 - core.bot_integrated - INFO - print_final_stats:493 - Max perdas consecutivas: 0
+2025-08-28 21:59:27 - core.bot_integrated - INFO - print_final_stats:494 - Max drawdown: $+0.00
+2025-08-28 21:59:27 - core.bot_integrated - INFO - print_final_stats:500 - Sistema de otimização IA estava ativo durante a execução
+2025-08-28 21:59:27 - core.bot_integrated - INFO - shutdown:521 - Bot integrado finalizado com sucesso
+2025-08-28 21:59:27 - core.bot_integrated - INFO - shutdown:505 - Desligando bot integrado...
+2025-08-28 21:59:27 - core.analysis.ai_optimizer - INFO - stop_monitoring:58 - Monitoramento IA parado
+2025-08-28 21:59:27 - core.bot_integrated - INFO - shutdown:510 - Sistema IA parado
+2025-08-28 21:59:27 - core.bot_integrated - INFO - print_final_stats:485 - 
+ESTATÍSTICAS FINAIS:
+2025-08-28 21:59:27 - core.bot_integrated - INFO - print_final_stats:488 - Total de trades: 0
+2025-08-28 21:59:27 - core.bot_integrated - INFO - print_final_stats:489 - PnL Total: $+0.00
+2025-08-28 21:59:27 - core.bot_integrated - INFO - print_final_stats:490 - Win Rate: 0.0%
+2025-08-28 21:59:27 - core.bot_integrated - INFO - print_final_stats:491 - Maior ganho: $+0.00
+2025-08-28 21:59:27 - core.bot_integrated - INFO - print_final_stats:492 - Maior perda: $+0.00
+2025-08-28 21:59:27 - core.bot_integrated - INFO - print_final_stats:493 - Max perdas consecutivas: 0
+2025-08-28 21:59:27 - core.bot_integrated - INFO - print_final_stats:494 - Max drawdown: $+0.00
+2025-08-28 21:59:27 - core.bot_integrated - INFO - print_final_stats:500 - Sistema de otimização IA estava ativo durante a execução
+2025-08-28 21:59:27 - core.bot_integrated - INFO - shutdown:521 - Bot integrado finalizado com sucesso
+2025-08-28 21:59:27 - core.bot_integrated - INFO - print_final_stats:485 - 
+ESTATÍSTICAS FINAIS:
+2025-08-28 21:59:27 - core.bot_integrated - INFO - print_final_stats:488 - Total de trades: 0
+2025-08-28 21:59:27 - core.bot_integrated - INFO - print_final_stats:489 - PnL Total: $+0.00
+2025-08-28 21:59:27 - core.bot_integrated - INFO - print_final_stats:490 - Win Rate: 0.0%
+2025-08-28 21:59:27 - core.bot_integrated - INFO - print_final_stats:491 - Maior ganho: $+0.00
+2025-08-28 21:59:27 - core.bot_integrated - INFO - print_final_stats:492 - Maior perda: $+0.00
+2025-08-28 21:59:27 - core.bot_integrated - INFO - print_final_stats:493 - Max perdas consecutivas: 0
+2025-08-28 21:59:27 - core.bot_integrated - INFO - print_final_stats:494 - Max drawdown: $+0.00
+2025-08-28 21:59:27 - core.bot_integrated - INFO - print_final_stats:500 - Sistema de otimização IA estava ativo durante a execução
+2025-08-28 21:59:27 - root - INFO - run:209 - Bot finalizado
+2025-08-28 22:03:39 - root - INFO - run:143 - Iniciando BingX Futures Bot v2.2.1
+2025-08-28 22:03:39 - root - INFO - run:147 - 🤖 Inicializando bot...
+2025-08-28 22:03:39 - root - INFO - _initialize_bot:68 - Carregando bot integrado com sistema IA
+2025-08-28 22:03:39 - core.managers - DEBUG - <module>:22 - Base managers não disponíveis: No module named 'core.managers.managers'
+2025-08-28 22:03:39 - core.managers - DEBUG - <module>:28 - PositionManager não disponível: No module named 'core.managers.managers'
+2025-08-28 22:03:39 - core.managers - DEBUG - <module>:40 - BotFactory não disponível: No module named 'core.managers.bot'
+2025-08-28 22:03:39 - core.managers - DEBUG - <module>:46 - BaseBot não disponível: No module named 'core.managers.bot'
+2025-08-28 22:03:39 - core.managers - DEBUG - <module>:52 - FuturesBot não disponível: No module named 'core.managers.bot'
+2025-08-28 22:03:39 - core.managers - DEBUG - <module>:62 - AIConfigOptimizer não disponível: No module named 'core.managers.analysis'
+2025-08-28 22:03:39 - core.managers - DEBUG - <module>:68 - MetricsCalculator não disponível: No module named 'core.managers.analysis'
+2025-08-28 22:03:39 - core.managers - DEBUG - <module>:82 - Position sizing não disponível: No module named 'core.managers.position'
+2025-08-28 22:03:39 - core.managers - DEBUG - <module>:88 - Position execution não disponível: No module named 'core.managers.position'
+2025-08-28 22:03:39 - core.managers - DEBUG - <module>:97 - Safety systems não disponíveis: No module named 'core.managers.safety'
+2025-08-28 22:03:39 - core.managers - DEBUG - <module>:106 - Config systems não disponíveis: No module named 'core.managers.config'
+2025-08-28 22:03:39 - core.managers - INFO - <module>:200 - Core module loaded: 0 components available
+2025-08-28 22:03:39 - core - DEBUG - <module>:22 - Base managers importados
+2025-08-28 22:03:39 - core - DEBUG - <module>:28 - PositionManager importado
+2025-08-28 22:03:39 - core - DEBUG - <module>:36 - RiskManager importado de managers
+2025-08-28 22:03:39 - core.analysis - DEBUG - <module>:16 - AnalysisManager importado
+2025-08-28 22:03:39 - core.bot.futures_bot - DEBUG - <module>:19 - MetricsCalculator importado com sucesso
+2025-08-28 22:03:39 - core - DEBUG - <module>:44 - BotFactory importado
+2025-08-28 22:03:39 - core - DEBUG - <module>:52 - AIConfigOptimizer importado
+2025-08-28 22:03:39 - core - DEBUG - <module>:60 - MetricsCalculator importado
+2025-08-28 22:03:39 - core - INFO - <module>:104 - Core module loaded: 8 components available
+2025-08-28 22:03:39 - analysis.regime_detection - INFO - __init__:65 - Regime Detector inicializado - Enabled: True
+2025-08-28 22:03:39 - core.managers.base_manager - INFO - __init__:40 - PositionManager inicializado
+2025-08-28 22:03:39 - core.managers.position_manager - INFO - set_balance:65 - Saldo atualizado: $100.00
+2025-08-28 22:03:39 - core.managers.position_manager - INFO - __init__:39 - PositionManager inicializado - Paper: True
+2025-08-28 22:03:39 - core.managers.risk_manager - INFO - __init__:66 - Risk Manager inicializado:
+2025-08-28 22:03:39 - core.managers.risk_manager - INFO - __init__:67 -   Stop Loss: 1.8% (Trailing: False)
+2025-08-28 22:03:39 - core.managers.risk_manager - INFO - __init__:68 -   Take Profit: 3.2%
+2025-08-28 22:03:39 - core.managers.risk_manager - INFO - __init__:69 -   Limites diários: 50 trades, $25.0 loss
+2025-08-28 22:03:39 - core.managers.position_manager - INFO - set_balance:65 - Saldo atualizado: $100.00
+2025-08-28 22:03:39 - core.analysis.ai_optimizer - INFO - __init__:39 - AI Config Optimizer inicializado
+2025-08-28 22:03:39 - core.analysis.ai_optimizer - INFO - __init__:40 - Snapshots serão salvos em: config/snapshots/
+2025-08-28 22:03:39 - core.analysis.ai_optimizer - INFO - start_monitoring:51 - Monitoramento IA iniciado - Análise a cada hora
+2025-08-28 22:03:39 - core.bot_integrated - INFO - __init__:55 - Sistema de otimização IA ativado
+2025-08-28 22:03:39 - core.bot_integrated - INFO - __init__:64 - Bot integrado inicializado - Modo: PAPER
+2025-08-28 22:03:39 - root - INFO - run:153 - Modo de operação: PAPER TRADING
+2025-08-28 22:03:39 - root - INFO - run:154 - Par principal: SOL/USDT
+2025-08-28 22:03:39 - root - INFO - run:159 - Sistema de otimização IA: ATIVO
+2025-08-28 22:03:39 - root - INFO - run:184 - 🚀 Iniciando loop de trading...
+2025-08-28 22:03:39 - core.bot_integrated - INFO - run:397 - Bot integrado iniciado
+2025-08-28 22:03:50 - root - INFO - signal_handler:79 - 
+🛑 Sinal de interrupção recebido...
+2025-08-28 22:03:50 - core.bot_integrated - INFO - shutdown:505 - Desligando bot integrado...
+2025-08-28 22:03:50 - core.analysis.ai_optimizer - INFO - stop_monitoring:58 - Monitoramento IA parado
+2025-08-28 22:03:50 - core.bot_integrated - INFO - shutdown:510 - Sistema IA parado
+2025-08-28 22:03:50 - core.bot_integrated - INFO - print_final_stats:485 - 
+ESTATÍSTICAS FINAIS:
+2025-08-28 22:03:50 - core.bot_integrated - INFO - print_final_stats:488 - Total de trades: 0
+2025-08-28 22:03:50 - core.bot_integrated - INFO - print_final_stats:489 - PnL Total: $+0.00
+2025-08-28 22:03:50 - core.bot_integrated - INFO - print_final_stats:490 - Win Rate: 0.0%
+2025-08-28 22:03:50 - core.bot_integrated - INFO - print_final_stats:491 - Maior ganho: $+0.00
+2025-08-28 22:03:50 - core.bot_integrated - INFO - print_final_stats:492 - Maior perda: $+0.00
+2025-08-28 22:03:50 - core.bot_integrated - INFO - print_final_stats:493 - Max perdas consecutivas: 0
+2025-08-28 22:03:50 - core.bot_integrated - INFO - print_final_stats:494 - Max drawdown: $+0.00
+2025-08-28 22:03:50 - core.bot_integrated - INFO - print_final_stats:500 - Sistema de otimização IA estava ativo durante a execução
+2025-08-28 22:03:50 - core.bot_integrated - INFO - shutdown:521 - Bot integrado finalizado com sucesso
+2025-08-28 22:03:50 - core.bot_integrated - INFO - shutdown:505 - Desligando bot integrado...
+2025-08-28 22:03:50 - core.analysis.ai_optimizer - INFO - stop_monitoring:58 - Monitoramento IA parado
+2025-08-28 22:03:50 - core.bot_integrated - INFO - shutdown:510 - Sistema IA parado
+2025-08-28 22:03:50 - core.bot_integrated - INFO - print_final_stats:485 - 
+ESTATÍSTICAS FINAIS:
+2025-08-28 22:03:50 - core.bot_integrated - INFO - print_final_stats:488 - Total de trades: 0
+2025-08-28 22:03:50 - core.bot_integrated - INFO - print_final_stats:489 - PnL Total: $+0.00
+2025-08-28 22:03:50 - core.bot_integrated - INFO - print_final_stats:490 - Win Rate: 0.0%
+2025-08-28 22:03:50 - core.bot_integrated - INFO - print_final_stats:491 - Maior ganho: $+0.00
+2025-08-28 22:03:50 - core.bot_integrated - INFO - print_final_stats:492 - Maior perda: $+0.00
+2025-08-28 22:03:50 - core.bot_integrated - INFO - print_final_stats:493 - Max perdas consecutivas: 0
+2025-08-28 22:03:50 - core.bot_integrated - INFO - print_final_stats:494 - Max drawdown: $+0.00
+2025-08-28 22:03:50 - core.bot_integrated - INFO - print_final_stats:500 - Sistema de otimização IA estava ativo durante a execução
+2025-08-28 22:03:50 - core.bot_integrated - INFO - shutdown:521 - Bot integrado finalizado com sucesso
+2025-08-28 22:03:50 - core.bot_integrated - INFO - print_final_stats:485 - 
+ESTATÍSTICAS FINAIS:
+2025-08-28 22:03:50 - core.bot_integrated - INFO - print_final_stats:488 - Total de trades: 0
+2025-08-28 22:03:50 - core.bot_integrated - INFO - print_final_stats:489 - PnL Total: $+0.00
+2025-08-28 22:03:50 - core.bot_integrated - INFO - print_final_stats:490 - Win Rate: 0.0%
+2025-08-28 22:03:50 - core.bot_integrated - INFO - print_final_stats:491 - Maior ganho: $+0.00
+2025-08-28 22:03:50 - core.bot_integrated - INFO - print_final_stats:492 - Maior perda: $+0.00
+2025-08-28 22:03:50 - core.bot_integrated - INFO - print_final_stats:493 - Max perdas consecutivas: 0
+2025-08-28 22:03:50 - core.bot_integrated - INFO - print_final_stats:494 - Max drawdown: $+0.00
+2025-08-28 22:03:50 - core.bot_integrated - INFO - print_final_stats:500 - Sistema de otimização IA estava ativo durante a execução
+2025-08-28 22:03:50 - root - INFO - run:209 - Bot finalizado

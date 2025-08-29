@@ -1,0 +1,510 @@
+# ==============================================
+# CONFIGURAÇÃO OTIMIZADA - BTC/USDT PARA MELHOR PERFORMANCE
+# Versão 2.2 - Ajustes críticos para lucratividade
+# ==============================================
+
+# ========== MODO DE OPERAÇÃO ==========
+advanced:
+  paper_trading:
+    enabled: true                       # true = simulação, false = real
+    initial_balance_usdt: 100.0         # Saldo inicial para paper trading
+    simulate_fees: true                 # Simular taxas em paper trading
+    simulate_slippage: false            # Simular slippage
+
+# ========== CONFIGURAÇÃO DA EXCHANGE ==========
+exchanges:
+  bingx:
+    # Credenciais API
+    api_key: ""
+    secret_key: ""
+    testnet: false                      # true = testnet, false = mainnet
+    
+    # URLs da API
+    base_url: "https://open-api.bingx.com"
+    futures_url: "https://open-api.bingx.com"
+    
+    # Taxas de trading
+    fees:
+      maker: 0.0002                     # 0.02%
+      taker: 0.0004                     # 0.04%
+    
+    # Configurações da API
+    rate_limit_requests_per_minute: 50
+    request_timeout: 30                 # segundos
+    max_retries: 3
+
+# ========== LIMITES DA EXCHANGE ==========
+exchange:
+  min_order_value_usdt: 45.0           # Valor mínimo da ordem em USDT
+  default_balance: 100.0               # Saldo padrão quando não consegue obter
+  position_mode: "hedge"               # "hedge" ou "one_way"
+  margin_type: "ISOLATED"              # "ISOLATED" ou "CROSS"
+
+# ========== ESTRATÉGIA PRINCIPAL ==========
+strategy:
+  primary_exchange: "bingx"
+  mode: "futures_precision"
+  
+  # Timing de análise - MAIS AGRESSIVO
+  initial_wait_seconds: 30             # Reduzido de 60 para 30
+  analysis_interval_seconds: 50        # Reduzido de 60 para 50 (BTC mais estável)
+  order_check_interval_seconds: 25     # Reduzido de 30 para 25
+  price_update_interval_seconds: 15    # Mantido 15 (BTC mais estável)
+  
+  # Controle de posições - OTIMIZADO
+  max_concurrent_positions: 1          # Máximo de posições simultâneas
+  cooldown_between_trades_seconds: 120 # BTC: 4 min (um pouco mais que ETH)
+  
+  # Hold inteligente por P&L
+  min_position_hold_seconds: 450       # 7.5 min mínimo (BTC mais estável)
+  min_hold_if_losing_seconds: 1200     # 20 min se perdendo
+  quick_profit_exit_threshold: 0.8     # Se +0.8% pode sair em <10min
+  max_position_hold_seconds: 7200      # Máximo 2h (BTC aguenta mais tempo)
+  order_timeout_seconds: 30            # Timeout para ordens
+
+# ========== CONFIGURAÇÃO DE PARES ==========
+trading:
+  primary_pair: "BTC/USDT"             # Par principal configurável
+  
+  trading_pairs:
+    - symbol: "BTC/USDT"
+      futures_symbol: "BTC-USDT"
+      enabled: true
+      
+      # Alavancagem e risco
+      leverage: 3                      # Alavancagem maior que ETH (BTC mais estável)
+      risk_per_trade_pct: 1.5          # BTC: risco menor que ETH
+      
+      # Limites de tamanho
+      min_position_size: 0.001         # Tamanho mínimo em BTC
+      max_position_size: 0.05          # Tamanho máximo em BTC
+      
+      # Precisão
+      tick_size: 1.0                   # Precisão do preço
+      step_size: 0.001                 # Precisão da quantidade
+
+# ========== GERENCIAMENTO DE RISCO - OTIMIZADO ==========
+risk_management:
+  # Stop Loss - MAIS INTELIGENTE
+  stop_loss:
+    enabled: true
+    percentage: 1.6                    # BTC: SL um pouco maior que ETH
+    trailing_enabled: false            # DESABILITADO TEMPORARIAMENTE
+    trailing_percentage: 1.0           # Reduzido para BTC
+    trailing_callback_rate: 0.7        # Callback menor para BTC
+    adaptive_stops: false               # Stops adaptativos por volatilidade
+    
+  # Take Profit - MAIS AGRESSIVO
+  take_profit:
+    enabled: true
+    percentage: 2.8                    # BTC: mesmo que ETH
+    partial_take_enabled: true         # Take profit parcial
+    partial_percentage: 1.2            # Mesmo que ETH
+    partial_amount_pct: 0.4            # 40% da posição (menos que ETH)
+    quick_profit_percentage: 0.6       # BTC: Se +0.6% em <7min
+    quick_profit_amount_pct: 0.3       # 30% da posição
+  
+  # Gerenciamento de margem
+  margin_management:
+    max_margin_usage_pct: 70.0         # Uso máximo de margem
+    margin_call_threshold_pct: 85.0    # Limite para margin call
+    auto_add_margin_enabled: false     # Adicionar margem automaticamente
+    min_margin_ratio: 1.5              # Ratio mínimo de margem
+  
+  # Limites diários - MAIS FLEXÍVEL
+  daily_limits:
+    max_trades: 25                     # BTC: menos trades que ETH
+    max_loss_usdt: 30.0                # BTC: perda maior que ETH
+    max_loss_percentage: 5.0           # BTC: % maior que ETH
+    max_drawdown_percentage: 10.0      # BTC: drawdown maior que ETH
+  
+  # Kill switch - MENOS RESTRITIVO
+  kill_switch:
+    enabled: true
+    total_loss_percentage: 10.0        # BTC: maior que ETH
+    consecutive_losses: 3              # BTC: mais conservador que ETH
+    daily_loss_reset: true             # Reset diário do contador
+    margin_call_stop: true             # Para em margin call
+
+  # Scaling - PARA SISTEMAS AVANÇADOS
+  scaling:
+    max_position_multiplier: 2.2       # BTC: menor que ETH
+    scale_in_stop_loss_adjustment: true # Ajusta stop ao fazer scale in
+    dynamic_take_profits: true         # Take profits baseados em microestrutura
+
+# ========== ANÁLISE TÉCNICA ==========
+technical_analysis:
+  # Dados históricos
+  historical_data_points: 200         # BTC: mais dados que ETH
+  candle_interval: "5m"                # Mantido 5m
+  
+  # Médias móveis
+  short_ma_period: 9
+  long_ma_period: 21
+  
+  # Volatilidade
+  volatility:
+    atr_period: 14
+    volatility_threshold: 0.2          # Mesmo que ETH
+    high_vol_adjustment: true
+    
+  # Suporte e resistência
+  support_resistance:
+    enabled: true
+    lookback_periods: 100              # BTC: mais períodos
+    min_touches: 2
+    tolerance_percentage: 0.2          # BTC: mais preciso que ETH
+    
+  # Momentum
+  momentum:
+    enabled: true
+    period: 10                         # BTC: período maior que ETH
+    threshold: 1.5                     # Mesmo que ETH
+
+# ========== POSITION SIZING DINÂMICO ==========
+position_sizing:
+  enabled: true                        # Ativa position sizing baseado em volatilidade
+  
+  # Parâmetros de volatilidade
+  target_volatility_pct: 2.0           # BTC: menor que ETH
+  volatility_lookback: 30              # BTC: maior lookback
+  vol_adjustment_factor: 0.3           # BTC: menor ajuste
+  
+  # Risk budgeting do portfólio
+  max_portfolio_risk_pct: 10.0         # BTC: menor que ETH
+  correlation_threshold: 0.7           # BTC: menor que ETH
+  
+  # Kelly Criterion
+  use_kelly_criterion: true            # Usa Kelly Criterion para sizing
+  kelly_lookback_trades: 20            # BTC: mais trades para análise
+  
+  # Limites de segurança
+  min_size_multiplier: 0.3             # BTC: menor que ETH
+  max_size_multiplier: 2.0             # BTC: menor que ETH
+  
+  # Ajustes por regime de volatilidade
+  volatility_adjustments:
+    very_low_vol_multiplier: 1.3       # BTC: menor aumento
+    low_vol_multiplier: 1.1            # BTC: menor aumento
+    normal_vol_multiplier: 1.0         # Sem ajuste
+    high_vol_multiplier: 0.8           # BTC: menos redução
+    extreme_vol_multiplier: 0.5        # BTC: mais conservador
+  
+  # Configurações avançadas
+  confidence_scaling: true             # Ajusta por confiança do sinal
+  correlation_adjustment: true         # Considera correlação entre ativos
+  rebalance_suggestions: true          # Sugere rebalanceamentos
+  
+  # Cache e performance
+  cache_duration_minutes: 5            # BTC: cache maior
+
+# ========== REGIME DETECTION - OTIMIZADO ==========
+regime_detection:
+  enabled: true                        # Ativa detecção automática de regimes
+  
+  # Thresholds para classificação - BTC
+  trend_threshold: 0.020               # BTC: maior que ETH
+  volatility_threshold: 0.030          # BTC: maior que ETH
+  breakout_threshold: 0.015            # BTC: maior que ETH
+  ranging_threshold: 0.005             # BTC: maior que ETH
+  
+  # Períodos de análise (em horas)
+  short_period_hours: 4                # BTC: maior que ETH
+  medium_period_hours: 24              # BTC: maior que ETH
+  long_period_hours: 72                # BTC: maior que ETH
+  
+  # Configurações avançadas
+  min_confidence_threshold: 0.45       # BTC: maior que ETH
+  regime_analysis_interval_minutes: 60 # BTC: maior que ETH
+  
+  # Ajustes automáticos por regime - BTC
+  auto_adjustments:
+    enabled: true                      # Aplica ajustes automáticos
+    
+    # Ajustes para trending markets
+    trending_adjustments:
+      reduce_min_scores: 1.0           # BTC: menor que ETH
+      favor_momentum: true             # Favorece indicadores de momentum
+      avoid_counter_trend: true        # Evita trades contra tendência
+      
+    # Ajustes para ranging markets  
+    ranging_adjustments:
+      extreme_rsi_levels: true         # Usa níveis extremos de RSI (20/80)
+      favor_mean_reversion: true       # Favorece reversão à média
+      reduce_position_size: 0.8        # BTC: maior redução que ETH
+      
+    # Ajustes para alta volatilidade
+    high_vol_adjustments:
+      increase_min_scores: 2.0         # BTC: mais que ETH
+      reduce_confidence: 0.7           # BTC: menor que ETH
+      wider_stops: true                # Stops mais largos
+      reduce_frequency: true           # Menos trades
+      
+    # Ajustes para breakouts
+    breakout_adjustments:
+      boost_aligned_confidence: 1.3    # BTC: menor que ETH
+      reject_counter_breakout: true    # Rejeita trades contra breakout
+      volume_confirmation: true        # Exige confirmação de volume
+
+# ========== CONFIGURAÇÃO DE SINAIS - MAIS AGRESSIVA ==========
+ai_futures:
+  enabled: true
+  
+  # Direções permitidas
+  signals:
+    allow_long: true
+    allow_short: true
+    require_trend_confirmation: true   # BTC: mais conservador que ETH
+    
+  # RSI - MAIS AGRESSIVO
+  rsi:
+    enabled: true
+    period: 14
+    oversold_level: 30                 # BTC: menos agressivo que ETH
+    overbought_level: 70               # BTC: menos agressivo que ETH
+    extreme_oversold: 20               # BTC: menos agressivo que ETH
+    extreme_overbought: 80             # BTC: menos agressivo que ETH
+    
+  # MACD
+  macd:
+    enabled: true
+    fast_period: 12
+    slow_period: 26
+    signal_period: 9
+    histogram_threshold: 0.5           # BTC: maior que ETH
+    require_histogram_confirmation: true # BTC: mais conservador
+    
+  # EMA
+  ema:
+    enabled: true
+    short_period: 9
+    long_period: 21
+    require_trend_alignment: true      # BTC: mais conservador que ETH
+    
+  # Bollinger Bands
+  bollinger:
+    enabled: true
+    period: 20
+    std_deviation: 2.0
+    squeeze_detection: true
+    
+  # Volume
+  volume_confirmation:
+    enabled: true                      # BTC: habilitado (mais líquido)
+    volume_multiplier: 1.2             # BTC: menor que ETH
+    volume_period: 20                  # BTC: maior que ETH
+    
+  # Stochastic
+  stochastic:
+    enabled: true
+    k_period: 14
+    d_period: 3
+    smooth_k: 3
+    oversold: 30                       # BTC: menos agressivo que ETH
+    overbought: 70                     # BTC: menos agressivo que ETH
+    
+  # Filtros de sinal - MENOS RESTRITIVOS
+  filters:
+    min_confidence: 0.70               # BTC: maior que ETH
+    require_multiple_signals: true     # Requer múltiplos indicadores
+    min_signals_required: 3            # BTC: mais sinais que ETH
+    contradictory_signals_check: true  # BTC: habilitado
+    volume_confirmation_required: true # BTC: habilitado
+    
+  # Sistema de pontuação - MENOS RESTRITIVO
+  scoring:
+    enabled: true
+    # Pesos para cada indicador
+    rsi_weight: 2.0                    # BTC: menor que ETH
+    macd_weight: 3.0                   # BTC: maior que ETH
+    ema_weight: 2.5                    # BTC: maior que ETH
+    bollinger_weight: 1.5              # BTC: menor que ETH
+    volume_weight: 1.5                 # BTC: maior que ETH
+    stochastic_weight: 1.0             # BTC: menor que ETH
+    momentum_weight: 2.0               # BTC: maior que ETH
+    # Scores mínimos para entrada - CRÍTICO
+    min_score_long: 4.5                # BTC: maior que ETH
+    min_score_short: 5.0               # BTC: maior que ETH
+    # Diferença mínima entre scores
+    min_score_difference: 2.5          # BTC: maior que ETH
+
+# ========== EXECUÇÃO DE ORDENS ==========
+execution:
+  # Execução inteligente de ordens
+  smart_execution:
+    enabled: true                      # Ativa sistema de execução inteligente
+    wide_spread_threshold: 0.10        # BTC: menor que ETH
+    low_volume_threshold: 0.05         # BTC: menor que ETH
+    high_vol_threshold: 3.0            # BTC: maior que ETH
+    
+    # Estratégias por condição
+    strategies:
+      normal: "limit_aggressive"       # Condições normais
+      wide_spread: "smart_limit"       # Spread amplo
+      low_liquidity: "limit_passive"   # Baixa liquidez
+      high_volatility: "market"        # Alta volatilidade
+      trending: "limit_aggressive"     # Mercado em tendência
+      ranging: "limit_passive"         # Mercado em range
+    
+    # Configurações TWAP
+    twap:
+      chunks: 4                        # BTC: mais chunks
+      interval_seconds: 5              # BTC: mais devagar
+      
+    # Configurações Iceberg
+    iceberg:
+      show_size_pct: 0.25              # BTC: menor que ETH
+      refresh_interval: 10             # BTC: mais devagar
+  
+  order_execution:
+    retry_failed_orders: true
+    max_retries: 3                     # BTC: menos tentativas
+    retry_delay_seconds: 2             # BTC: mais devagar
+    
+    # Roteamento inteligente
+    smart_routing:
+      enabled: false
+      use_limit_on_low_volatility: false
+      limit_offset_pct: 0.03           # BTC: maior que ETH
+      
+  # Controle de slippage
+  slippage_control:
+    max_slippage_pct: 0.10             # BTC: menor que ETH
+    cancel_on_high_slippage: false
+    track_slippage: true               # Monitora slippage para otimização
+    
+  # Validação
+  validation:
+    check_margin_before_order: true
+    check_position_limits: true
+    check_daily_limits: true
+    validate_price_deviation: true
+    max_price_deviation_pct: 1.0       # BTC: menor que ETH
+
+# ========== LOGGING E MONITORAMENTO ==========
+logging:
+  log_level: "INFO"                    # DEBUG, INFO, WARNING, ERROR
+  log_file: "logs/bot_btc.log"
+  max_log_size_mb: 100
+  backup_count: 5
+  
+  # Log de trades
+  trade_log:
+    enabled: true
+    file: "logs/trades_btc.csv"
+    
+  # Notificações (futuro)
+  notifications:
+    enabled: false
+    telegram_bot_token: ""
+    telegram_chat_id: ""
+
+# ========== CONFIGURAÇÕES AVANÇADAS ==========
+advanced_settings:
+  # Seleção de Bot
+  use_integrated_bot: true            # true = bot integrado com IA, false = bot original
+  
+  # Performance
+  use_multiprocessing: false
+  cache_market_data: true
+  cache_duration_seconds: 60           # BTC: cache maior que ETH
+  
+  # Debug
+  debug_mode: true                     # ATIVADO para monitorar
+  save_analysis_data: true             # ATIVADO para análise
+  analysis_output_dir: "logs/analysis_btc/"
+  
+  # Backup
+  auto_backup_enabled: true
+  backup_interval_hours: 24            # BTC: backup menos frequente
+  backup_directory: "backups/"
+  
+  # SISTEMA IA DE OTIMIZAÇÃO
+  ai_optimization:
+    enabled: true                     # Manter desabilitado por enquanto
+    analysis_interval_hours: 1         # BTC: análise mais frequente
+    min_trades_for_analysis: 5         # BTC: menos trades para análise
+    performance_window_hours: 24       # BTC: janela maior
+    min_confidence_to_apply: 0.55      # BTC: mais conservador
+    
+    # Configurações de otimização automática
+    auto_optimization:
+      enabled: true                   # Desabilitado até validar performance
+      backup_current_config: true      # Faz backup antes de aplicar
+      max_changes_per_hour: 2          # BTC: menos mudanças
+      
+    # Parâmetros que podem ser otimizados
+    optimizable_parameters:
+      - "ai_futures.scoring.min_score_long"
+      - "ai_futures.scoring.min_score_short" 
+      - "ai_futures.filters.min_confidence"
+      - "risk_management.stop_loss.percentage"
+      - "risk_management.take_profit.percentage"
+      - "risk_management.take_profit.partial_percentage"
+      - "trading.trading_pairs.0.risk_per_trade_pct"
+      - "strategy.max_position_hold_seconds"
+      - "strategy.cooldown_between_trades_seconds"
+    
+    # Limites de segurança para otimização
+    safety_limits:
+      min_stop_loss_pct: 1.2           # BTC: maior que ETH
+      max_stop_loss_pct: 3.0           # BTC: menor que ETH
+      min_take_profit_pct: 2.0         # BTC: maior que ETH
+      max_take_profit_pct: 6.0         # BTC: mesmo que ETH
+      min_risk_per_trade_pct: 0.8      # BTC: maior que ETH
+      max_risk_per_trade_pct: 3.0      # BTC: mesmo que ETH
+      min_confidence: 0.6              # BTC: maior que ETH
+      max_confidence: 0.9              # BTC: mesmo que ETH
+      
+    # Configurações de snapshot
+    snapshots:
+      save_path: "config/snapshots/btc/" # Diretório dos snapshots
+      keep_last_n_snapshots: 12        # BTC: mais snapshots
+      filename_format: "btc_snapshot_%Y%m%d_%H%M%S.yaml"
+      include_analysis: true           # Salvar análise junto
+
+  # SISTEMAS AVANÇADOS - CONFIGURAÇÃO CENTRALIZADA
+  advanced_systems:
+    entry_system:
+      enabled: true
+      min_entry_quality_score: 65      # BTC: maior que ETH
+      quality_based_sizing: true       # Sizing baseado na qualidade
+      max_size_multiplier: 1.5         # BTC: menor que ETH
+      volume_profile_analysis: true    # Análise de volume profile
+      support_resistance_check: true   # Verificação de S/R
+      
+    position_scaling:
+      enabled: true
+      max_scale_in_count: 1            # BTC: menos scale ins
+      max_scale_out_percentage: 0.8    # BTC: menos scale out
+      scale_in_quality_threshold: 75   # BTC: threshold maior
+      pullback_scale_threshold: 0.8    # BTC: mais conservador
+      profit_scale_threshold: 1.0      # BTC: menos agressivo
+      
+    microstructure_analysis:
+      enabled: true
+      execution_optimization: true     # Otimiza execução baseado em liquidez
+      smart_money_detection: true      # Detecta atividade institucional
+      liquidity_forecasting: false    # Previsão de liquidez (computacionalmente intenso)
+      order_flow_analysis: true       # Análise de order flow
+      market_health_scoring: true     # Score de saúde do mercado
+      
+# ========== METADADOS ==========
+metadata:
+  config_version: "2.2.2"
+  last_updated: "2025-08-27"
+  description: "Configuração BTC/USDT otimizada com sistemas avançados integrados"
+  asset: "BTC"
+  author: "BingX Bot System - Performance Optimized"
+  changes_made:
+    - "Aplicadas melhorias da config ETH adaptadas para BTC"
+    - "Position sizing dinâmico configurado"
+    - "Regime detection implementado"
+    - "Smart execution system integrado"
+    - "Sistemas avançados organizados e configurados"
+    - "Parâmetros ajustados para perfil do BTC"
+    - "Scores e thresholds adaptados para menor volatilidade"
+    - "Volume confirmation habilitado (BTC mais líquido)"
+  
+  # Histórico de otimizações
+  optimization_history: []

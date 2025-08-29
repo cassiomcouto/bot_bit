@@ -1,0 +1,380 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Position Manager - Versão compatível com a estrutura atual
+Funciona sem dependências de position.execution
+"""
+
+import logging
+from typing import Dict, Optional, List, Tuple
+from datetime import datetime
+
+from .base_manager import BaseManager, StatefulManager
+
+logger = logging.getLogger(__name__)
+
+class PositionManager(StatefulManager):
+    """Gerenciador de posições compatível com a estrutura atual"""
+    
+    def __init__(self, config: Dict, api=None, paper_trading: bool = True):
+        """
+        Inicializa o Position Manager
+        
+        Args:
+            config: Configuração do sistema
+            api: API da exchange (None para paper trading)
+            paper_trading: Se está em modo paper trading
+        """
+        self.api = api
+        self.paper_trading = paper_trading
+        self.balance = 0.0
+        self.positions = {}  # Tracking simples de posições
+        
+        super().__init__(config, "PositionManager")
+        
+        # Estado inicial
+        initial_balance = self._get_config('advanced.paper_trading.initial_balance_usdt', 100.0)
+        self.set_balance(initial_balance)
+        
+        logger.info(f"PositionManager inicializado - Paper: {paper_trading}")
+    
+    def _initialize(self):
+        """Inicialização específica do Position Manager"""
+        # Configurações básicas já carregadas no __init__
+        pass
+    
+    def _get_required_config_keys(self) -> list:
+        """Chaves de configuração obrigatórias"""
+        return [
+            'trading.primary_pair',
+            'risk_management.stop_loss_percent',
+            'risk_management.take_profit_percent'
+        ]
+    
+    def _get_optional_config_keys(self) -> list:
+        """Chaves de configuração opcionais"""
+        return [
+            'strategy.cooldown_between_trades_seconds',
+            'strategy.max_position_hold_seconds'
+        ]
+    
+    def set_balance(self, balance: float):
+        """Define saldo atual"""
+        self.balance = balance
+        self.update_state({'balance': balance})
+        logger.info(f"Saldo atualizado: ${balance:.2f}")
+    
+    def get_balance(self) -> float:
+        """Retorna saldo atual"""
+        return self.balance
+    
+    # === POSITION MANAGEMENT METHODS ===
+    
+    def has_position(self, symbol: str) -> bool:
+        """Verifica se tem posição para o símbolo"""
+        return symbol in self.positions
+    
+    def get_position(self, symbol: str) -> Optional[Dict]:
+        """Obtém dados da posição"""
+        return self.positions.get(symbol)
+    
+    def can_open_position(self, symbol: str) -> bool:
+        """Verifica se pode abrir nova posição"""
+        if not self.is_enabled():
+            return False
+        
+        # Verifica se já tem posição
+        if self.has_position(symbol):
+            return False
+        
+        # Verifica cooldown entre trades
+        if not self._check_cooldown():
+            return False
+        
+        return True
+    
+    def _check_cooldown(self) -> bool:
+        """Verifica cooldown entre trades"""
+        cooldown = self._get_config('strategy.cooldown_between_trades_seconds', 300)
+        last_trade_time = self._state.get('last_trade_time')
+        
+        if last_trade_time:
+            time_since_trade = (datetime.now() - last_trade_time).total_seconds()
+            if time_since_trade < cooldown:
+                return False
+        
+        return True
+    
+    # === ENTRY METHODS ===
+    
+    def open_position(self, symbol: str, side: str, size: float, 
+                     price: float, reason: str = None, 
+                     confidence: float = 1.0) -> Dict:
+        """
+        Abre nova posição
+        
+        Args:
+            symbol: Par a negociar
+            side: Direção ('long' ou 'short')
+            size: Tamanho da posição
+            price: Preço de entrada
+            reason: Motivo da abertura
+            confidence: Confiança do sinal (0-1)
+            
+        Returns:
+            Dict com resultado da operação
+        """
+        if not self.can_open_position(symbol):
+            return {'success': False, 'error': 'Não pode abrir posição'}
+        
+        try:
+            # Cria dados da posição
+            position_data = {
+                'symbol': symbol,
+                'side': side,
+                'quantity': size,
+                'entry_price': price,
+                'entry_time': datetime.now(),
+                'reason': reason,
+                'confidence': confidence,
+                'paper_trade': self.paper_trading
+            }
+            
+            # Adiciona ao tracking
+            self.positions[symbol] = position_data
+            
+            # Atualiza estado
+            self.update_state({
+                'last_trade_time': datetime.now(),
+                'total_positions_opened': self._state.get('total_positions_opened', 0) + 1
+            })
+            
+            # Cria objeto de trade para retorno
+            trade_data = {
+                'symbol': symbol,
+                'side': side,
+                'action': 'open',
+                'quantity': size,
+                'entry_price': price,
+                'pnl': 0.0,
+                'entry_time': datetime.now(),
+                'reason': reason
+            }
+            
+            logger.info(f"Posição aberta: {symbol} {side.upper()} {size} @ ${price:.4f}")
+            return {'success': True, 'trade': trade_data}
+                
+        except Exception as e:
+            logger.error(f"Erro ao abrir posição: {e}")
+            return {'success': False, 'error': str(e)}
+    
+    def calculate_position_size(self, symbol: str, price: float, side: str, 
+                               confidence: float = 1.0) -> float:
+        """Calcula tamanho da posição"""
+        try:
+            # Cálculo simples baseado no risco por trade
+            base_amount = self._get_config('trading.base_amount_usdt', 100.0)
+            risk_pct = self._get_config('trading.risk_per_trade_pct', 2.0)
+            
+            # Usa uma fração do saldo baseada no risco
+            risk_amount = self.balance * (risk_pct / 100.0)
+            position_value = min(base_amount, risk_amount)
+            
+            # Calcula quantidade baseada no preço
+            quantity = position_value / price
+            
+            return quantity
+            
+        except Exception as e:
+            logger.error(f"Erro ao calcular position size: {e}")
+            return 0.01  # Fallback
+    
+    # === EXIT METHODS ===
+    
+    def close_position(self, symbol: str, price: float = None, reason: str = None, 
+                      percentage: float = 1.0) -> Dict:
+        """
+        Fecha posição (total ou parcial)
+        
+        Args:
+            symbol: Símbolo da posição
+            price: Preço de saída
+            reason: Motivo do fechamento
+            percentage: Percentual a fechar (1.0 = 100%)
+            
+        Returns:
+            Dict com resultado da operação
+        """
+        position = self.get_position(symbol)
+        if not position:
+            return {'success': False, 'error': 'Posição não encontrada'}
+        
+        try:
+            entry_price = position['entry_price']
+            quantity = position['quantity']
+            side = position['side']
+            
+            # Usa preço atual se não fornecido
+            if price is None:
+                price = entry_price  # Fallback simples
+            
+            # Calcula PnL
+            if side.lower() == 'long':
+                pnl = (price - entry_price) * quantity * percentage
+            else:  # short
+                pnl = (entry_price - price) * quantity * percentage
+            
+            # Cria dados do trade
+            trade_data = {
+                'symbol': symbol,
+                'side': side,
+                'action': 'close',
+                'quantity': quantity * percentage,
+                'entry_price': entry_price,
+                'exit_price': price,
+                'pnl': pnl,
+                'entry_time': position.get('entry_time'),
+                'exit_time': datetime.now(),
+                'reason': reason
+            }
+            
+            # Remove ou atualiza posição
+            if percentage >= 1.0:
+                # Fechamento total
+                del self.positions[symbol]
+                logger.info(f"Posição fechada: {symbol} PnL: ${pnl:.2f}")
+            else:
+                # Fechamento parcial
+                self.positions[symbol]['quantity'] *= (1 - percentage)
+                logger.info(f"Posição parcialmente fechada: {symbol} {percentage*100:.0f}% PnL: ${pnl:.2f}")
+            
+            # Atualiza saldo (paper trading)
+            if self.paper_trading:
+                self.balance += pnl
+                self.update_state({'balance': self.balance})
+            
+            # Atualiza estatísticas
+            self.update_state({
+                'total_positions_closed': self._state.get('total_positions_closed', 0) + 1
+            })
+            
+            return {
+                'success': True, 
+                'trade': trade_data,
+                'pnl': pnl
+            }
+                
+        except Exception as e:
+            logger.error(f"Erro ao fechar posição: {e}")
+            return {'success': False, 'error': str(e)}
+    
+    # === UTILITY METHODS ===
+    
+    def calculate_unrealized_pnl(self, position: Dict, current_price: float) -> float:
+        """Calcula PnL não realizado"""
+        try:
+            entry_price = position['entry_price']
+            quantity = position['quantity']
+            side = position['side']
+            
+            if side.lower() == 'long':
+                return (current_price - entry_price) * quantity
+            else:  # short
+                return (entry_price - current_price) * quantity
+                
+        except Exception as e:
+            logger.error(f"Erro ao calcular PnL: {e}")
+            return 0.0
+    
+    def cancel_all_orders(self):
+        """Cancela todas as ordens abertas"""
+        if self.paper_trading or not self.api:
+            logger.info("Paper trading - não há ordens reais para cancelar")
+            return
+        
+        try:
+            # Em modo real, cancelaria via API
+            if hasattr(self.api, 'cancel_all_orders'):
+                self.api.cancel_all_orders()
+                logger.info("Ordens canceladas via API")
+        except Exception as e:
+            logger.warning(f"Erro ao cancelar ordens: {e}")
+    
+    def sync_positions(self, api_positions: List):
+        """Sincroniza posições com a exchange"""
+        logger.info(f"Sincronizando {len(api_positions)} posições da exchange")
+        
+        # Limpa posições atuais
+        self.positions.clear()
+        
+        for api_pos in api_positions:
+            try:
+                # Adapta para estrutura esperada
+                symbol = getattr(api_pos, 'symbol', str(api_pos)).replace('-', '/')
+                
+                position_data = {
+                    'symbol': symbol,
+                    'side': getattr(api_pos, 'positionSide', 'long').lower(),
+                    'quantity': float(getattr(api_pos, 'size', 0)),
+                    'entry_price': float(getattr(api_pos, 'entryPrice', 0)),
+                    'mark_price': float(getattr(api_pos, 'markPrice', 0)),
+                    'unrealized_pnl': float(getattr(api_pos, 'unrealizedPnl', 0)),
+                    'margin_used': float(getattr(api_pos, 'marginUsed', 0)),
+                    'leverage': int(getattr(api_pos, 'leverage', 1)),
+                    'entry_time': datetime.now(),
+                    'real_trade': True
+                }
+                
+                self.positions[symbol] = position_data
+                logger.info(f"Posição sincronizada: {symbol}")
+                
+            except Exception as e:
+                logger.warning(f"Erro ao sincronizar posição: {e}")
+    
+    def print_positions(self):
+        """Imprime posições atuais"""
+        if not self.positions:
+            print(f"Nenhuma posição aberta | Saldo: ${self.balance:.2f}")
+        else:
+            print(f"Posições abertas: {len(self.positions)} | Saldo: ${self.balance:.2f}")
+            for symbol, pos in self.positions.items():
+                side = pos.get('side', 'unknown')
+                quantity = pos.get('quantity', 0)
+                entry_price = pos.get('entry_price', 0)
+                unrealized_pnl = pos.get('unrealized_pnl', 0)
+                
+                pnl_str = f"(PnL: ${unrealized_pnl:+.2f})" if unrealized_pnl != 0 else ""
+                print(f"  {symbol}: {side.upper()} {quantity:.4f} @ ${entry_price:.2f} {pnl_str}")
+    
+    def get_position_sizing_stats(self) -> Dict:
+        """Retorna estatísticas do sistema de position sizing"""
+        return {
+            'enabled': self.is_enabled(),
+            'paper_trading': self.paper_trading,
+            'current_balance': self.balance,
+            'active_positions': len(self.positions),
+            'positions': list(self.positions.keys())
+        }
+    
+    def _perform_specific_health_checks(self, health_status: Dict):
+        """Verificações específicas de saúde"""
+        # Verifica saldo
+        if self.balance <= 0:
+            health_status['issues'].append("Saldo insuficiente")
+        
+        # Verifica se tem muitas posições abertas
+        max_positions = self._get_config('trading.max_positions', 5)
+        if len(self.positions) >= max_positions:
+            health_status['issues'].append(f"Muitas posições abertas: {len(self.positions)}")
+    
+    def _perform_cleanup(self):
+        """Limpeza específica do Position Manager"""
+        # Cancela ordens pendentes se necessário
+        try:
+            self.cancel_all_orders()
+        except:
+            pass
+        
+        # Limpa tracking
+        self.positions.clear()
+        logger.info("Position Manager limpo")
