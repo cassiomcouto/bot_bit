@@ -4,8 +4,11 @@
 .env.*.local
 # Ignorar todas as pastas __pycache__
 **/__pycache__/
-
+*/__pycache__/
 # Ignorar arquivos compilados do Python
 *.pyc
 *.pyo
 *.pyd
+
+*.log
+logs/bot.log

@@ -1047,3 +1047,6 @@ ESTATÍSTICAS FINAIS:
 2025-08-29 08:07:01 - core.bot_integrated - INFO - run:411 - Bot integrado iniciado
 2025-08-29 08:07:51 - core.bot_integrated - ERROR - run_trading_cycle:248 - Erro no ciclo de trading: 'PositionManagerAdapter' object has no attribute 'has_position'
 2025-08-29 08:08:41 - core.bot_integrated - ERROR - run_trading_cycle:248 - Erro no ciclo de trading: 'PositionManagerAdapter' object has no attribute 'has_position'
+2025-08-29 08:09:31 - core.bot_integrated - ERROR - run_trading_cycle:248 - Erro no ciclo de trading: 'PositionManagerAdapter' object has no attribute 'has_position'
+2025-08-29 08:10:21 - core.bot_integrated - ERROR - run_trading_cycle:248 - Erro no ciclo de trading: 'PositionManagerAdapter' object has no attribute 'has_position'
+2025-08-29 08:11:11 - core.bot_integrated - ERROR - run_trading_cycle:248 - Erro no ciclo de trading: 'PositionManagerAdapter' object has no attribute 'has_position'
