@@ -92,6 +92,9 @@ class BingXFuturesBotIntegrated:
         except (KeyError, TypeError):
             return default
     
+# Em core/bot_integrated.py
+# Substitua a seção _initialize_components() por esta versão:
+
     def _initialize_components(self):
         """Inicializa todos os componentes do bot"""
         # Exchange API
@@ -109,7 +112,17 @@ class BingXFuturesBotIntegrated:
         
         # Componentes de trading
         self.market_analyzer = MarketAnalyzer(self.config)
-        self.position_manager = PositionManager(self.config, self.api, self.paper_trading)
+        
+        # *** CORREÇÃO: Usar PositionManagerAdapter ***
+        from core.position.adapters.position_adapter import PositionManagerAdapter
+        
+        # Cria PositionManager original
+        original_position_manager = PositionManager(self.config, self.api, self.paper_trading)
+        
+        # Envolve com adaptador que resolve os problemas de compatibilidade
+        self.position_manager = PositionManagerAdapter(original_position_manager)
+        
+        # Risk Manager
         self.risk_manager = RiskManager(self.config)
         
         # Logger CSV
@@ -118,8 +131,9 @@ class BingXFuturesBotIntegrated:
         # Estado inicial
         if self.paper_trading:
             initial_balance = self._get_config('advanced.paper_trading.initial_balance_usdt', 100.0)
-            self.position_manager.set_balance(initial_balance)
-    
+            # Usa o adaptador para definir o saldo
+            self.position_manager.position_manager.set_balance(initial_balance)
+
     def _sync_with_exchange(self):
         """Sincroniza estado com a exchange"""
         if self.paper_trading or not self.api:
