@@ -117,7 +117,7 @@ class RiskManager:
         
         return True
     
-    def check_exit_conditions(self, position, current_price: float) -> Optional[str]:
+    def check_exit_conditions(self, position: FuturesPosition, current_price: float) -> Optional[str]:
         """
         Verifica condições de saída obrigatória (Stop Loss, Take Profit, etc)
         Retorna razão para fechar ou None
@@ -125,27 +125,11 @@ class RiskManager:
         if not position:
             return None
         
-        # CORREÇÃO: Trata tanto dict quanto objeto FuturesPosition
-        if isinstance(position, dict):
-            symbol = position.get('symbol', 'UNKNOWN')
-            entry_price = position.get('entry_price', 0)
-            side = position.get('side', 'long')
-            
-            # Converte side string para PositionSide se necessário
-            if isinstance(side, str):
-                from models.data_classes import PositionSide
-                if side.lower() in ['long', 'buy']:
-                    side = PositionSide.LONG
-                else:
-                    side = PositionSide.SHORT
-        else:
-            # Objeto FuturesPosition
-            symbol = position.symbol
-            entry_price = position.entry_price
-            side = position.side
+        symbol = position.symbol
+        entry_price = position.entry_price
         
         # Calcula PnL percentual atual
-        if side == PositionSide.LONG:
+        if position.side == PositionSide.LONG:
             pnl_pct = ((current_price - entry_price) / entry_price) * 100
         else:
             pnl_pct = ((entry_price - current_price) / entry_price) * 100
@@ -159,7 +143,7 @@ class RiskManager:
         if self.trailing_enabled and symbol in self.trailing_stops:
             best_price = self.trailing_stops[symbol]
             
-            if side == PositionSide.LONG:
+            if position.side == PositionSide.LONG:
                 # Para LONG: trailing stop quando preço cai X% do melhor preço
                 trailing_pnl = ((current_price - best_price) / best_price) * 100
                 if trailing_pnl <= -self.trailing_pct:

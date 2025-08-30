@@ -39,15 +39,7 @@ class BingXFuturesBot:
         self.bot_start_time = datetime.now()
         
         # Estado do bot
-        # Configuração de paper trading
-        paper_config = self._get_config('advanced.paper_trading', {})
-        self.paper_trading = paper_config.get('enabled', True)
-        
-        # Log importante sobre modo de trading
-        if self.paper_trading:
-            logger.warning("🟡 MODO PAPER TRADING ATIVO - Nenhum trade real será executado")
-        else:
-            logger.critical("🔴 MODO TRADING REAL ATIVO - Trades reais serão executados!")
+        self.paper_trading = self._get_config('advanced.paper_trading.enabled', True)
         
         # Cache de preços para acompanhamento
         self.price_cache = {}
@@ -226,9 +218,9 @@ class BingXFuturesBot:
                 logger.info(f"Período de aquecimento: {remaining:.0f}s restantes")
             return False
         return True
-
+    
     def _manage_existing_position(self, symbol: str):
-        """Gerencia posição existente - VERSÃO CORRIGIDA"""
+        """Gerencia posição existente"""
         position = self.position_manager.get_position(symbol)
         current_price = self.market_analyzer.get_current_price(symbol)
         
@@ -242,7 +234,7 @@ class BingXFuturesBot:
         # Log periódico do status da posição
         self._log_position_status(position, current_price)
         
-        # CORREÇÃO: Verifica condições de saída com tratamento seguro
+        # Verifica condições de saída com preço atual
         try:
             # Tenta chamar com current_price (versão integrada)
             exit_signal = self.risk_manager.check_exit_conditions(position, current_price)
@@ -260,202 +252,29 @@ class BingXFuturesBot:
                 signal = analysis['signal']
                 if signal.action.startswith('close_'):
                     self._execute_exit(symbol, position, signal.reason, current_price)
-
+    
     def _log_position_status(self, position, current_price: float):
-        """Log periódico do status da posição - VERSÃO CORRIGIDA"""
+        """Log periódico do status da posição"""
         # Log a cada 5 minutos
         if hasattr(position, 'last_status_log'):
             time_since_log = (datetime.now() - position.last_status_log).total_seconds()
             if time_since_log < 300:  # 5 minutos
                 return
-        elif isinstance(position, dict):
-            last_log = position.get('last_status_log')
-            if last_log:
-                time_since_log = (datetime.now() - last_log).total_seconds()
-                if time_since_log < 300:
-                    return
-        
-        # CORREÇÃO: Acesso seguro aos dados da posição
-        if isinstance(position, dict):
-            # Posição é um dicionário
-            symbol = position.get('symbol', 'UNKNOWN')
-            side = position.get('side', 'unknown')
-            entry_price = position.get('entry_price', 0)
-            quantity = position.get('quantity', 0)
-        else:
-            # Posição é um objeto com atributos
-            symbol = getattr(position, 'symbol', 'UNKNOWN')
-            side = getattr(position, 'side', 'unknown')
-            entry_price = getattr(position, 'entry_price', 0)
-            quantity = getattr(position, 'quantity', 0)
         
         # Calcula PnL atual
-        unrealized_pnl = self._calculate_unrealized_pnl(position, current_price)
+        unrealized_pnl = self.position_manager.calculate_unrealized_pnl(position, current_price)
         
         # Calcula targets se ainda não existirem
-        targets = self._calculate_exit_targets(entry_price, side)
+        targets = self._calculate_exit_targets(position.entry_price, position.side.value)
         
-        logger.info(f"Status da posição {symbol}: "
-                f"Preço atual: ${current_price:.4f} | "
-                f"PnL: ${unrealized_pnl:.2f} | "
-                f"TP: ${targets['take_profit']:.4f} | "
-                f"SL: ${targets['stop_loss']:.4f}")
+        logger.info(f"Status da posição {position.symbol}: "
+                   f"Preço atual: ${current_price:.4f} | "
+                   f"PnL: ${unrealized_pnl:.2f} | "
+                   f"TP: ${targets['take_profit']:.4f} | "
+                   f"SL: ${targets['stop_loss']:.4f}")
         
         # Marca timestamp do último log
-        if isinstance(position, dict):
-            position['last_status_log'] = datetime.now()
-        else:
-            position.last_status_log = datetime.now()
-
-    def _calculate_unrealized_pnl(self, position, current_price: float) -> float:
-        """Calcula PnL não realizado - VERSÃO CORRIGIDA"""
-        try:
-            # CORREÇÃO: Acesso seguro aos dados
-            if isinstance(position, dict):
-                entry_price = position.get('entry_price', current_price)
-                quantity = position.get('quantity', 0)
-                side = position.get('side', 'long')
-            else:
-                entry_price = getattr(position, 'entry_price', current_price)
-                quantity = getattr(position, 'quantity', 0) 
-                side = getattr(position, 'side', 'long')
-            
-            if side and isinstance(side, str):
-                side_str = side.lower()
-            elif hasattr(side, 'value'):
-                side_str = side.value.lower()
-            else:
-                side_str = 'long'  # Default
-            
-            # Calcula PnL
-            if side_str == 'long':
-                return (current_price - entry_price) * quantity
-            else:  # short
-                return (entry_price - current_price) * quantity
-                
-        except Exception as e:
-            logger.error(f"Erro ao calcular PnL: {e}")
-            return 0.0
-
-    def _execute_exit(self, symbol: str, position, reason: str, current_price: float = None):
-        """Executa saída de posição - VERSÃO CORRIGIDA"""
-        try:
-            if current_price is None:
-                current_price = self.market_analyzer.get_current_price(symbol)
-                
-            if not current_price:
-                logger.error(f"Não foi possível obter preço para fechar posição {symbol}")
-                return
-            
-            # CORREÇÃO: Acesso seguro aos dados da posição
-            if isinstance(position, dict):
-                entry_price = position.get('entry_price', current_price)
-                side = position.get('side', 'long')
-            else:
-                entry_price = getattr(position, 'entry_price', current_price)
-                side = getattr(position, 'side', 'long')
-            
-            # Trata side se for um enum
-            if hasattr(side, 'value'):
-                side_str = side.value
-            else:
-                side_str = str(side)
-            
-            # Calcula targets originais para comparação
-            original_targets = self._calculate_exit_targets(entry_price, side_str)
-            
-            # SOLUÇÃO ROBUSTA: Tenta múltiplas assinaturas do close_position
-            result = self._safe_close_position(symbol, current_price, reason)
-            
-            if result and result.get('success', False):
-                trade = result.get('trade')
-                pnl = result.get('pnl', 0)
-                
-                # Log detalhado da saída
-                logger.info(f"Posição fechada: PnL ${pnl:.2f}")
-                logger.info(f"Preço de entrada: ${entry_price:.4f}")
-                logger.info(f"Preço de saída: ${current_price:.4f}")
-                logger.info(f"TP previsto era: ${original_targets['take_profit']:.4f}")
-                logger.info(f"SL previsto era: ${original_targets['stop_loss']:.4f}")
-                logger.info(f"Motivo: {reason}")
-                
-                # Se temos dados do trade, registra no CSV
-                if trade:
-                    # Adiciona informações extras ao trade para o CSV
-                    trade_data = {
-                        'trade': trade,
-                        'predicted_tp': original_targets['take_profit'],
-                        'predicted_sl': original_targets['stop_loss'],
-                        'actual_exit_price': current_price,
-                        'exit_reason': reason,
-                        'target_hit': self._check_target_hit(
-                            entry_price, 
-                            current_price, 
-                            original_targets, 
-                            side_str
-                        )
-                    }
-                    
-                    # Log no CSV com dados estendidos
-                    self.csv_logger.log_trade_extended(trade_data)
-                    
-                    # Atualiza estatísticas
-                    self.risk_manager.update_statistics(trade)
-                else:
-                    # Log básico se não temos objeto trade
-                    trade_dict = {
-                        'symbol': symbol,
-                        'side': side_str,
-                        'action': 'close',
-                        'quantity': position.get('quantity', 0) if isinstance(position, dict) else getattr(position, 'quantity', 0),
-                        'entry_price': entry_price,
-                        'exit_price': current_price,
-                        'pnl': pnl,
-                        'entry_time': position.get('entry_time') if isinstance(position, dict) else getattr(position, 'entry_time', None),
-                        'exit_time': datetime.now(),
-                        'reason': reason
-                    }
-                    
-                    trade_data = {
-                        'trade': trade_dict,
-                        'predicted_tp': original_targets['take_profit'],
-                        'predicted_sl': original_targets['stop_loss'],
-                        'actual_exit_price': current_price,
-                        'exit_reason': reason,
-                        'target_hit': self._check_target_hit(
-                            entry_price, 
-                            current_price, 
-                            original_targets, 
-                            side_str
-                        )
-                    }
-                    
-                    self.csv_logger.log_trade_extended(trade_data)
-                
-            else:
-                error_msg = result.get('error', 'Erro desconhecido') if result else 'Nenhum resultado'
-                logger.warning(f"Falha ao fechar posição: {error_msg}")
-                
-                # Força limpeza da posição no tracking
-                try:
-                    if hasattr(self.position_manager, 'positions'):
-                        self.position_manager.positions.pop(symbol, None)
-                    logger.info(f"Posição {symbol} removida do tracking após falha")
-                except Exception as cleanup_error:
-                    logger.warning(f"Erro na limpeza: {cleanup_error}")
-                
-        except Exception as e:
-            logger.error(f"Erro ao executar saída: {e}")
-            import traceback
-            logger.debug(traceback.format_exc())
-            
-            # Em caso de erro crítico, força limpeza
-            try:
-                if hasattr(self.position_manager, 'positions'):
-                    self.position_manager.positions.pop(symbol, None)
-                logger.warning(f"Posição {symbol} removida forçadamente após erro crítico")
-            except:
-                pass
+        position.last_status_log = datetime.now()
     
     def _check_entry_opportunity(self, symbol: str):
         """Verifica oportunidade de entrada"""
@@ -546,7 +365,113 @@ class BingXFuturesBot:
             logger.error(f"Erro ao executar entrada: {e}")
             import traceback
             logger.debug(traceback.format_exc())
-
+    
+    def _execute_exit(self, symbol: str, position, reason: str, current_price: float = None):
+        """Executa saída de posição com tratamento robusto de argumentos"""
+        try:
+            if current_price is None:
+                current_price = self.market_analyzer.get_current_price(symbol)
+                
+            if not current_price:
+                logger.error(f"Não foi possível obter preço para fechar posição {symbol}")
+                return
+            
+            # Calcula targets originais para comparação
+            original_targets = self._calculate_exit_targets(position.entry_price, position.side.value)
+            
+            # SOLUÇÃO ROBUSTA: Tenta múltiplas assinaturas do close_position
+            result = self._safe_close_position(symbol, current_price, reason)
+            
+            if result and result.get('success', False):
+                trade = result.get('trade')
+                pnl = result.get('pnl', 0)
+                
+                # Log detalhado da saída
+                logger.info(f"Posição fechada: PnL ${pnl:.2f}")
+                logger.info(f"Preço de entrada: ${position.entry_price:.4f}")
+                logger.info(f"Preço de saída: ${current_price:.4f}")
+                logger.info(f"TP previsto era: ${original_targets['take_profit']:.4f}")
+                logger.info(f"SL previsto era: ${original_targets['stop_loss']:.4f}")
+                logger.info(f"Motivo: {reason}")
+                
+                # Se temos dados do trade, registra no CSV
+                if trade:
+                    # Adiciona informações extras ao trade para o CSV
+                    trade_data = {
+                        'trade': trade,
+                        'predicted_tp': original_targets['take_profit'],
+                        'predicted_sl': original_targets['stop_loss'],
+                        'actual_exit_price': current_price,
+                        'exit_reason': reason,
+                        'target_hit': self._check_target_hit(
+                            position.entry_price, 
+                            current_price, 
+                            original_targets, 
+                            position.side.value
+                        )
+                    }
+                    
+                    # Log no CSV com dados estendidos
+                    self.csv_logger.log_trade_extended(trade_data)
+                    
+                    # Atualiza estatísticas
+                    self.risk_manager.update_statistics(trade)
+                else:
+                    # Log básico se não temos objeto trade
+                    trade_dict = {
+                        'symbol': symbol,
+                        'side': position.side.value,
+                        'action': 'close',
+                        'quantity': getattr(position, 'quantity', 0),
+                        'entry_price': position.entry_price,
+                        'exit_price': current_price,
+                        'pnl': pnl,
+                        'entry_time': getattr(position, 'entry_time', None),
+                        'exit_time': datetime.now(),
+                        'reason': reason
+                    }
+                    
+                    trade_data = {
+                        'trade': trade_dict,
+                        'predicted_tp': original_targets['take_profit'],
+                        'predicted_sl': original_targets['stop_loss'],
+                        'actual_exit_price': current_price,
+                        'exit_reason': reason,
+                        'target_hit': self._check_target_hit(
+                            position.entry_price, 
+                            current_price, 
+                            original_targets, 
+                            position.side.value
+                        )
+                    }
+                    
+                    self.csv_logger.log_trade_extended(trade_data)
+                
+            else:
+                error_msg = result.get('error', 'Erro desconhecido') if result else 'Nenhum resultado'
+                logger.warning(f"Falha ao fechar posição: {error_msg}")
+                
+                # Força limpeza da posição no tracking
+                try:
+                    if hasattr(self.position_manager, 'positions'):
+                        self.position_manager.positions.pop(symbol, None)
+                    logger.info(f"Posição {symbol} removida do tracking após falha")
+                except Exception as cleanup_error:
+                    logger.warning(f"Erro na limpeza: {cleanup_error}")
+                
+        except Exception as e:
+            logger.error(f"Erro ao executar saída: {e}")
+            import traceback
+            logger.debug(traceback.format_exc())
+            
+            # Em caso de erro crítico, força limpeza
+            try:
+                if hasattr(self.position_manager, 'positions'):
+                    self.position_manager.positions.pop(symbol, None)
+                logger.warning(f"Posição {symbol} removida forçadamente após erro crítico")
+            except:
+                pass
+    
     def _safe_close_position(self, symbol: str, price: float, reason: str):
         """
         Tenta fechar posição usando múltiplas assinaturas de forma segura

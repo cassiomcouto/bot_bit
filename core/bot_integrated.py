@@ -38,7 +38,23 @@ class BingXFuturesBotIntegrated:
         self.bot_start_time = datetime.now()
         
         # Estado do bot
-        self.paper_trading = self._get_config('advanced.paper_trading.enabled', True)
+        # Configuração de paper trading - FORÇADO PARA REAL
+        paper_config = self._get_config('advanced.paper_trading', {})
+        config_paper_trading = paper_config.get('enabled', False)  # Default False
+        
+        # FORÇA TRADING REAL se config diz False
+        if not config_paper_trading:
+            self.paper_trading = False
+            print("🔴 TRADING REAL ATIVO - Ordens serão executadas na BingX!")
+        else:
+            self.paper_trading = True
+            print("🟡 Paper trading ativo - Apenas simulação")
+        
+        # Log importante sobre modo de trading
+        if self.paper_trading:
+            logger.warning("🟡 MODO PAPER TRADING ATIVO - Nenhum trade real será executado")
+        else:
+            logger.critical("🔴 MODO TRADING REAL ATIVO - Trades reais serão executados!")
         
         # Inicializa componentes principais
         self._initialize_components()

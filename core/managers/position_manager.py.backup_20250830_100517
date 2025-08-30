@@ -124,7 +124,6 @@ class PositionManager(StatefulManager):
         Returns:
             Dict com resultado da operação
         """
-        logger.info(f"🚀 EXECUTANDO ORDEM REAL: {side} {size} {symbol} @ ${price}")
         if not self.can_open_position(symbol):
             return {'success': False, 'error': 'Não pode abrir posição'}
         

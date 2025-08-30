@@ -14,7 +14,7 @@ advanced:
 # ========== CONFIGURAÇÃO DA EXCHANGE ==========
 exchanges:
   bingx:
-    # Credenciais API
+
     api_key: ""
     secret_key: ""
     testnet: false                      # true = testnet, false = mainnet
