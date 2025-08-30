@@ -89,7 +89,7 @@ risk_management:
   stop_loss:
     enabled: true
     percentage: 1.6                    # BTC: SL um pouco maior que ETH
-    trailing_enabled: false            # DESABILITADO TEMPORARIAMENTE
+    trailing_enabled: true            # DESABILITADO TEMPORARIAMENTE
     trailing_percentage: 1.0           # Reduzido para BTC
     trailing_callback_rate: 0.7        # Callback menor para BTC
     adaptive_stops: false               # Stops adaptativos por volatilidade
@@ -122,7 +122,7 @@ risk_management:
   kill_switch:
     enabled: true
     total_loss_percentage: 10.0        # BTC: maior que ETH
-    consecutive_losses: 3              # BTC: mais conservador que ETH
+    consecutive_losses: 5              # BTC: mais conservador que ETH
     daily_loss_reset: true             # Reset diário do contador
     margin_call_stop: true             # Para em margin call
 
@@ -136,7 +136,7 @@ risk_management:
 technical_analysis:
   # Dados históricos
   historical_data_points: 200         # BTC: mais dados que ETH
-  candle_interval: "5m"                # Mantido 5m
+  candle_interval: "10m"                # Mantido 5m
   
   # Médias móveis
   short_ma_period: 9
@@ -145,7 +145,7 @@ technical_analysis:
   # Volatilidade
   volatility:
     atr_period: 14
-    volatility_threshold: 0.2          # Mesmo que ETH
+    volatility_threshold: 0.10          # Mesmo que ETH
     high_vol_adjustment: true
     
   # Suporte e resistência
@@ -260,8 +260,8 @@ ai_futures:
   rsi:
     enabled: true
     period: 14
-    oversold_level: 30                 # BTC: menos agressivo que ETH
-    overbought_level: 70               # BTC: menos agressivo que ETH
+    oversold_level: 15                 # BTC: menos agressivo que ETH
+    overbought_level: 85               # BTC: menos agressivo que ETH
     extreme_oversold: 20               # BTC: menos agressivo que ETH
     extreme_overbought: 80             # BTC: menos agressivo que ETH
     
@@ -305,7 +305,7 @@ ai_futures:
     
   # Filtros de sinal - MENOS RESTRITIVOS
   filters:
-    min_confidence: 0.70               # BTC: maior que ETH
+    min_confidence: 0.50               # BTC: maior que ETH
     require_multiple_signals: true     # Requer múltiplos indicadores
     min_signals_required: 3            # BTC: mais sinais que ETH
     contradictory_signals_check: true  # BTC: habilitado
@@ -323,10 +323,10 @@ ai_futures:
     stochastic_weight: 1.0             # BTC: menor que ETH
     momentum_weight: 2.0               # BTC: maior que ETH
     # Scores mínimos para entrada - CRÍTICO
-    min_score_long: 4.5                # BTC: maior que ETH
-    min_score_short: 5.0               # BTC: maior que ETH
+    min_score_long: 3.0                # BTC: maior que ETH
+    min_score_short: 3.0               # BTC: maior que ETH
     # Diferença mínima entre scores
-    min_score_difference: 2.5          # BTC: maior que ETH
+    min_score_difference: 1.0          # BTC: maior que ETH
 
 # ========== EXECUÇÃO DE ORDENS ==========
 execution:
@@ -425,7 +425,7 @@ advanced_settings:
     analysis_interval_hours: 1         # BTC: análise mais frequente
     min_trades_for_analysis: 5         # BTC: menos trades para análise
     performance_window_hours: 24       # BTC: janela maior
-    min_confidence_to_apply: 0.55      # BTC: mais conservador
+    min_confidence_to_apply: 0.50      # BTC: mais conservador
     
     # Configurações de otimização automática
     auto_optimization:
@@ -453,7 +453,7 @@ advanced_settings:
       max_take_profit_pct: 6.0         # BTC: mesmo que ETH
       min_risk_per_trade_pct: 0.8      # BTC: maior que ETH
       max_risk_per_trade_pct: 3.0      # BTC: mesmo que ETH
-      min_confidence: 0.6              # BTC: maior que ETH
+      min_confidence: 0.5              # BTC: maior que ETH
       max_confidence: 0.9              # BTC: mesmo que ETH
       
     # Configurações de snapshot

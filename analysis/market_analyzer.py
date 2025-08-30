@@ -1,6 +1,7 @@
 import logging
 import requests
 import pandas as pd
+import time
 from datetime import datetime, timedelta
 from typing import Dict, Optional
 from analysis.technical_analysis import TechnicalAnalysis
@@ -23,7 +24,7 @@ class MarketAnalyzer:
             return True
         
         # Intervalo reduzido para análise mais frequente
-        interval = self.config.get('strategy', {}).get('analysis_interval_seconds', 45)  # Era 60
+        interval = self.config.get('strategy', {}).get('analysis_interval_seconds', 45)
         time_since = (datetime.now() - self.last_analysis_time).total_seconds()
         
         return time_since >= interval
@@ -33,7 +34,7 @@ class MarketAnalyzer:
         
         # Verifica cooldown entre trades
         if self.last_trade_time:
-            cooldown = self.config.get('strategy', {}).get('cooldown_between_trades_seconds', 180)  # Era 300
+            cooldown = self.config.get('strategy', {}).get('cooldown_between_trades_seconds', 180)
             time_since_trade = (datetime.now() - self.last_trade_time).total_seconds()
             
             if time_since_trade < cooldown:
@@ -42,7 +43,7 @@ class MarketAnalyzer:
         
         # Evita trading em volatilidade muito baixa
         min_volatility = self.config.get('technical_analysis', {}).get('volatility', {}).get('volatility_threshold', 1.8)
-        if current_volatility < min_volatility * 0.7:  # 70% do threshold
+        if current_volatility < min_volatility * 0.7:
             return False, f"Volatilidade muito baixa ({current_volatility:.2f}%)"
         
         # Verifica kill switch
@@ -50,7 +51,7 @@ class MarketAnalyzer:
         if self.consecutive_losses >= max_consecutive:
             return False, f"Kill switch ativado ({self.consecutive_losses} perdas consecutivas)"
         
-        # Evita trading em horários de baixa liquidez (exemplo: 02:00-04:00 UTC)
+        # Evita trading em horários de baixa liquidez
         current_hour = datetime.utcnow().hour
         if 2 <= current_hour <= 4:
             return False, "Horário de baixa liquidez"
@@ -58,18 +59,19 @@ class MarketAnalyzer:
         return True, "Condições favoráveis"
     
     def update_trade_result(self, pnl_pct: float):
-        """Atualiza resultado do último trade"""
+        """Atualiza resultado do último trade - CORRIGIDO"""
         self.last_trade_time = datetime.now()
         
-        if pnl_pct <= 0:
+        if pnl_pct < -0.5:
             self.consecutive_losses += 1
-        else:
-            self.consecutive_losses = 0  # Reset contador em lucro
+            logger.info(f"Perda registrada: {pnl_pct:.2f}% (consecutivas: {self.consecutive_losses})")
+        elif pnl_pct > 0.5:
+            self.consecutive_losses = 0
+            logger.info(f"Lucro registrado: {pnl_pct:.2f}% (contador resetado)")
     
     def get_current_price(self, symbol: str) -> float:
         """Obtém preço atual"""
         try:
-            # Substitua ETH/USDT por ETH-USDT para a API
             api_symbol = symbol.replace('/', '-')
             url = f"https://open-api.bingx.com/openApi/swap/v2/quote/price"
             params = {"symbol": api_symbol}
@@ -91,16 +93,16 @@ class MarketAnalyzer:
             return 0.0
     
     def fetch_market_data(self, symbol: str, limit: int = 100) -> pd.DataFrame:
-        """Busca dados de mercado com cache inteligente"""
+        """Busca dados de mercado - VERSÃO MELHORADA"""
         try:
             api_symbol = symbol.replace('/', '-')
             url = f"https://open-api.bingx.com/openApi/swap/v2/quote/klines"
             
-            # Usa menos dados para análise mais rápida
+            safe_limit = max(50, min(limit, 150))
             params = {
                 "symbol": api_symbol,
                 "interval": "5m",
-                "limit": min(limit, 150)  # Reduzido de 200 para 150
+                "limit": safe_limit
             }
             
             response = requests.get(url, params=params, timeout=15)
@@ -108,130 +110,287 @@ class MarketAnalyzer:
             
             if data.get("code") != 0:
                 logger.error(f"Erro na API klines: {data}")
-                return pd.DataFrame()
+                return self._create_empty_dataframe()
             
             klines = data.get("data", [])
             if not klines:
                 logger.warning("Nenhum dado de klines retornado")
-                return pd.DataFrame()
+                return self._create_empty_dataframe()
+            
+            if len(klines) < 10:
+                logger.warning(f"Dados insuficientes retornados: {len(klines)} velas")
             
             df_data = []
             for kline in klines:
                 if isinstance(kline, dict):
-                    df_data.append([
-                        kline['time'],
-                        float(kline['open']),
-                        float(kline['high']),
-                        float(kline['low']),
-                        float(kline['close']),
-                        float(kline['volume'])
-                    ])
+                    try:
+                        df_data.append([
+                            kline['time'],
+                            float(kline['open']),
+                            float(kline['high']),
+                            float(kline['low']),
+                            float(kline['close']),
+                            float(kline['volume'])
+                        ])
+                    except (KeyError, ValueError) as e:
+                        logger.warning(f"Erro ao processar kline: {e}")
+                        continue
+            
+            if not df_data:
+                logger.error("Nenhum dado válido após processamento")
+                return self._create_empty_dataframe()
             
             df = pd.DataFrame(df_data, columns=['time', 'open', 'high', 'low', 'close', 'volume'])
             df['timestamp'] = pd.to_datetime(df['time'], unit='ms')
             
-            # Ordena por timestamp
-            df = df.sort_values('timestamp').reset_index(drop=True)
+            df = df.sort_values('timestamp').drop_duplicates(subset=['timestamp']).reset_index(drop=True)
             
-            logger.info(f"Dados obtidos: {len(df)} velas para {symbol}")
-            return df[['timestamp', 'open', 'high', 'low', 'close', 'volume']].dropna()
+            final_df = df[['timestamp', 'open', 'high', 'low', 'close', 'volume']].dropna()
             
+            if final_df.empty:
+                logger.error("DataFrame final vazio após limpeza")
+                return self._create_empty_dataframe()
+            
+            logger.info(f"Dados obtidos para {symbol}: {len(final_df)} velas válidas")
+            return final_df
+            
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Erro de rede ao buscar dados: {e}")
+            return self._create_empty_dataframe()
         except Exception as e:
-            logger.error(f"Erro ao buscar dados: {e}")
-            return pd.DataFrame()
+            logger.error(f"Erro inesperado ao buscar dados: {e}")
+            return self._create_empty_dataframe()
+    
+    def _create_empty_dataframe(self) -> pd.DataFrame:
+        """Cria DataFrame vazio com estrutura correta"""
+        return pd.DataFrame(columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
     
     def calculate_market_conditions(self, df: pd.DataFrame) -> Dict:
-        """Calcula condições atuais do mercado"""
+        """Calcula condições atuais do mercado - VERSÃO CORRIGIDA"""
         if df.empty:
-            return {}
+            logger.warning("DataFrame vazio para análise de condições")
+            return self._get_default_market_conditions()
         
         try:
             conditions = {}
+            df_len = len(df)
+            logger.debug(f"Calculando condições com {df_len} velas")
             
-            # Volatilidade atual
+            # VOLATILIDADE - COM VERIFICAÇÃO SEGURA
             returns = df['close'].pct_change().dropna()
-            if len(returns) >= 20:
-                current_vol = returns.iloc[-20:].std() * 100  # Últimas 20 velas
+            returns_len = len(returns)
+            
+            if returns_len >= 20:
+                current_vol = returns.iloc[-20:].std() * 100
                 avg_vol = returns.std() * 100
-                conditions['current_volatility'] = current_vol
-                conditions['avg_volatility'] = avg_vol
-                conditions['volatility_ratio'] = current_vol / avg_vol if avg_vol > 0 else 1
+            elif returns_len >= 10:
+                current_vol = returns.iloc[-returns_len:].std() * 100
+                avg_vol = returns.std() * 100
+                logger.warning(f"Dados limitados para volatilidade: {returns_len} returns")
+            elif returns_len >= 5:
+                current_vol = returns.std() * 100
+                avg_vol = current_vol
+                logger.warning(f"Dados muito limitados para volatilidade: {returns_len} returns")
+            else:
+                current_vol = 2.0
+                avg_vol = 2.0
+                logger.warning(f"Dados insuficientes para volatilidade: {returns_len} returns")
             
-            # Volume
-            if len(df) >= 20:
-                current_vol_avg = df['volume'].iloc[-5:].mean()  # Últimas 5 velas
-                historical_vol_avg = df['volume'].iloc[-20:].mean()  # Últimas 20 velas
-                conditions['volume_ratio'] = current_vol_avg / historical_vol_avg if historical_vol_avg > 0 else 1
+            conditions['current_volatility'] = current_vol
+            conditions['avg_volatility'] = avg_vol
+            conditions['volatility_ratio'] = current_vol / avg_vol if avg_vol > 0 else 1.0
             
-            # Trend strength simples
-            if len(df) >= 20:
-                price_20_ago = df['close'].iloc[-20]
+            # VOLUME - COM VERIFICAÇÃO SEGURA
+            if df_len >= 20:
+                current_vol_avg = df['volume'].iloc[-5:].mean()
+                historical_vol_avg = df['volume'].iloc[-20:].mean()
+            elif df_len >= 10:
+                current_vol_avg = df['volume'].iloc[-min(3, df_len):].mean()
+                historical_vol_avg = df['volume'].iloc[-min(10, df_len):].mean()
+            elif df_len >= 5:
+                current_vol_avg = df['volume'].iloc[-min(2, df_len):].mean()
+                historical_vol_avg = df['volume'].mean()
+            else:
+                current_vol_avg = df['volume'].mean()
+                historical_vol_avg = current_vol_avg
+                
+            conditions['volume_ratio'] = current_vol_avg / historical_vol_avg if historical_vol_avg > 0 else 1.0
+            
+            # TREND STRENGTH - COM VERIFICAÇÃO SEGURA
+            if df_len >= 20:
+                price_ago = df['close'].iloc[-20]
                 current_price = df['close'].iloc[-1]
-                trend_strength = ((current_price - price_20_ago) / price_20_ago) * 100
-                conditions['trend_strength'] = trend_strength
-                conditions['trend_direction'] = 'up' if trend_strength > 0.5 else 'down' if trend_strength < -0.5 else 'neutral'
+                trend_strength = ((current_price - price_ago) / price_ago) * 100
+            elif df_len >= 10:
+                price_ago = df['close'].iloc[-min(10, df_len)]
+                current_price = df['close'].iloc[-1]
+                trend_strength = ((current_price - price_ago) / price_ago) * 100
+            elif df_len >= 5:
+                price_ago = df['close'].iloc[-min(5, df_len)]
+                current_price = df['close'].iloc[-1]
+                trend_strength = ((current_price - price_ago) / price_ago) * 100
+            else:
+                trend_strength = 0.0
+                
+            conditions['trend_strength'] = trend_strength
+            conditions['trend_direction'] = 'up' if trend_strength > 0.5 else 'down' if trend_strength < -0.5 else 'neutral'
             
-            # ATR para contexto
-            if len(df) >= 14:
+            # ATR - COM VERIFICAÇÃO SEGURA
+            if df_len >= 14:
                 high_low = df['high'] - df['low']
-                conditions['atr'] = high_low.rolling(14).mean().iloc[-1]
+                atr_window = min(14, df_len)
+                conditions['atr'] = high_low.rolling(atr_window).mean().iloc[-1]
+            else:
+                conditions['atr'] = (df['high'] - df['low']).mean()
             
-            logger.debug(f"Condições do mercado: {conditions}")
+            conditions['_debug_info'] = {
+                'df_length': df_len,
+                'returns_length': returns_len,
+                'data_quality': self._assess_data_quality(df_len)
+            }
+            
+            logger.debug(f"Condições calculadas: vol={current_vol:.2f}%, trend={trend_strength:.2f}%")
             return conditions
             
         except Exception as e:
             logger.error(f"Erro ao calcular condições: {e}")
-            return {}
+            return self._get_fallback_market_conditions(df)
+    
+    def _get_default_market_conditions(self) -> Dict:
+        """Retorna condições padrão quando não há dados"""
+        return {
+            'current_volatility': 2.0,
+            'avg_volatility': 2.0,
+            'volatility_ratio': 1.0,
+            'volume_ratio': 1.0,
+            'trend_strength': 0.0,
+            'trend_direction': 'neutral',
+            'atr': 10.0,
+            '_debug_info': {
+                'df_length': 0,
+                'returns_length': 0,
+                'data_quality': 'no_data'
+            }
+        }
+    
+    def _get_fallback_market_conditions(self, df: pd.DataFrame) -> Dict:
+        """Condições de fallback quando há erro no cálculo"""
+        if df.empty:
+            return self._get_default_market_conditions()
+        
+        try:
+            current_price = df['close'].iloc[-1]
+            prev_price = df['close'].iloc[0] if len(df) > 1 else current_price
+            
+            price_change_pct = ((current_price - prev_price) / prev_price * 100) if prev_price > 0 else 0
+            
+            return {
+                'current_volatility': abs(price_change_pct) + 1.0,
+                'avg_volatility': 2.0,
+                'volatility_ratio': 1.0,
+                'volume_ratio': 1.0,
+                'trend_strength': price_change_pct,
+                'trend_direction': 'up' if price_change_pct > 0.5 else 'down' if price_change_pct < -0.5 else 'neutral',
+                'atr': abs(df['high'].max() - df['low'].min()),
+                '_debug_info': {
+                    'df_length': len(df),
+                    'returns_length': 0,
+                    'data_quality': 'fallback_calculation'
+                }
+            }
+        except Exception as e:
+            logger.error(f"Erro mesmo no fallback: {e}")
+            return self._get_default_market_conditions()
+    
+    def _assess_data_quality(self, df_length: int) -> str:
+        """Avalia a qualidade dos dados disponíveis"""
+        if df_length >= 100:
+            return 'excellent'
+        elif df_length >= 50:
+            return 'good'
+        elif df_length >= 20:
+            return 'adequate'
+        elif df_length >= 10:
+            return 'limited'
+        elif df_length >= 5:
+            return 'poor'
+        else:
+            return 'insufficient'
     
     def analyze_market(self, symbol: str) -> Optional[Dict]:
-        """Analisa mercado com otimizações de performance"""
+        """Analisa mercado - VERSÃO ROBUSTA"""
         try:
             self.last_analysis_time = datetime.now()
             
-            # Busca dados
-            df = self.fetch_market_data(symbol, limit=100)  # Reduzido para 100 velas
+            df = None
+            max_retries = 3
             
-            if df.empty or len(df) < 30:  # Reduzido de 50 para 30
-                logger.warning(f"Dados insuficientes: {len(df)} velas")
-                return None
+            for attempt in range(max_retries):
+                df = self.fetch_market_data(symbol, limit=100)
+                
+                if not df.empty and len(df) >= 10:
+                    break
+                else:
+                    if attempt < max_retries - 1:
+                        logger.warning(f"Tentativa {attempt + 1}/{max_retries} falhou para {symbol}")
+                        time.sleep(2)
+                    else:
+                        logger.error(f"Falha em todas as {max_retries} tentativas para {symbol}")
             
-            # Calcula condições do mercado
+            if df is None or df.empty:
+                logger.error(f"Impossível obter dados para {symbol}")
+                return self._get_emergency_analysis_result(symbol)
+            
+            if len(df) < 5:
+                logger.warning(f"Dados muito limitados para {symbol}: {len(df)} velas")
+                return self._get_limited_analysis_result(symbol, df)
+            
             market_conditions = self.calculate_market_conditions(df)
             
-            # Verifica se deve fazer trade
             can_trade, trade_reason = self.should_trade_now(
                 market_conditions.get('current_volatility', 2.0)
             )
             
             if not can_trade:
-                logger.info(f"Trading bloqueado: {trade_reason}")
+                logger.info(f"Trading bloqueado para {symbol}: {trade_reason}")
                 return {
                     'can_trade': False,
                     'reason': trade_reason,
                     'market_conditions': market_conditions,
-                    'price': df['close'].iloc[-1]
+                    'price': df['close'].iloc[-1] if len(df) > 0 else 0,
+                    'data_quality': market_conditions.get('_debug_info', {}).get('data_quality', 'unknown')
                 }
             
-            # Análise de regime (se habilitada e necessária)
             regime_analysis = None
             if self.regime_detector.enabled:
-                # Analisa regime com menos frequência (a cada 30 min)
-                if self.regime_detector.should_analyze(symbol, 30):
-                    regime_analysis = self.regime_detector.analyze_market_regime(symbol)
+                try:
+                    if self.regime_detector.should_analyze(symbol, 30):
+                        regime_analysis = self.regime_detector.analyze_market_regime(symbol)
+                except Exception as e:
+                    logger.warning(f"Erro na análise de regime para {symbol}: {e}")
+                    regime_analysis = None
             
-            # Calcula indicadores técnicos
-            indicators = self.ta.calculate_technical_indicators(df, symbol)
+            indicators = None
+            try:
+                indicators = self.ta.calculate_technical_indicators(df, symbol)
+            except Exception as e:
+                logger.error(f"Erro ao calcular indicadores técnicos para {symbol}: {e}")
+                return self._get_emergency_analysis_result(symbol)
             
             if not indicators:
-                return None
+                logger.warning(f"Nenhum indicador calculado para {symbol}")
+                return self._get_emergency_analysis_result(symbol)
             
-            # Adiciona condições do mercado aos indicadores
             indicators.update(market_conditions)
             
-            # Gera sinal considerando regime de mercado
-            signal = self._generate_regime_aware_signal(
-                df, indicators, symbol, regime_analysis
-            )
+            signal = None
+            try:
+                signal = self._generate_regime_aware_signal(
+                    df, indicators, symbol, regime_analysis
+                )
+            except Exception as e:
+                logger.error(f"Erro ao gerar sinal para {symbol}: {e}")
+                signal = None
             
             analysis_result = {
                 'signal': signal,
@@ -240,38 +399,70 @@ class MarketAnalyzer:
                 'regime': regime_analysis,
                 'market_conditions': market_conditions,
                 'can_trade': True,
-                'data_quality': len(df)  # Para debug
+                'data_quality': market_conditions.get('_debug_info', {}).get('data_quality', 'unknown'),
+                'data_length': len(df)
             }
             
+            logger.debug(f"Análise completa para {symbol}: {analysis_result['data_quality']} quality")
             return analysis_result
             
         except Exception as e:
-            logger.error(f"Erro na análise: {e}")
+            logger.error(f"Erro crítico na análise de {symbol}: {e}")
             import traceback
             logger.error(traceback.format_exc())
-            return None
+            return self._get_emergency_analysis_result(symbol)
+    
+    def _get_emergency_analysis_result(self, symbol: str) -> Dict:
+        """Resultado de emergência quando tudo falha"""
+        try:
+            current_price = self.get_current_price(symbol)
+        except:
+            current_price = 0.0
+        
+        return {
+            'can_trade': False,
+            'reason': 'Erro crítico na análise - dados insuficientes',
+            'price': current_price,
+            'signal': None,
+            'indicators': {},
+            'market_conditions': self._get_default_market_conditions(),
+            'regime': None,
+            'data_quality': 'emergency',
+            'data_length': 0
+        }
+    
+    def _get_limited_analysis_result(self, symbol: str, df: pd.DataFrame) -> Dict:
+        """Análise limitada com poucos dados"""
+        try:
+            current_price = df['close'].iloc[-1] if len(df) > 0 else 0
+            basic_conditions = self._get_fallback_market_conditions(df)
+            
+            return {
+                'can_trade': False,
+                'reason': f'Dados insuficientes: apenas {len(df)} velas disponíveis',
+                'price': current_price,
+                'signal': None,
+                'indicators': {'current_price': current_price},
+                'market_conditions': basic_conditions,
+                'regime': None,
+                'data_quality': 'insufficient',
+                'data_length': len(df)
+            }
+        except Exception as e:
+            logger.error(f"Erro mesmo na análise limitada: {e}")
+            return self._get_emergency_analysis_result(symbol)
     
     def _generate_regime_aware_signal(self, df: pd.DataFrame, indicators: Dict, 
                                     symbol: str, regime_analysis) -> any:
         """Gera sinal adaptado ao regime de mercado detectado"""
         
-        # Se não há análise de regime, usa análise técnica padrão
         if not regime_analysis:
             return self.ta.generate_trading_signal(df, symbol, indicators)
         
-        # Obtém posições atuais (simulado - em produção viria do position manager)
         current_positions = {}
-        
-        # Aplica ajustes baseados no regime
         adjusted_config = self._adjust_config_for_regime(regime_analysis)
-        
-        # Cria analisador técnico temporário com configuração ajustada
         temp_ta = TechnicalAnalysis(adjusted_config)
-        
-        # Gera sinal com configuração ajustada
         signal = temp_ta.generate_trading_signal(df, symbol, indicators, current_positions)
-        
-        # Aplica filtros específicos do regime
         filtered_signal = self._apply_regime_filters(signal, regime_analysis, indicators)
         
         if filtered_signal and filtered_signal.action != 'hold':
@@ -287,7 +478,6 @@ class MarketAnalyzer:
         regime = regime_analysis.primary_regime
         recommendations = regime_analysis.recommendations
         
-        # Aplica ajustes de indicadores
         indicator_adjustments = recommendations.get('indicator_adjustments', {})
         
         if 'lower_rsi_oversold' in indicator_adjustments:
@@ -304,9 +494,7 @@ class MarketAnalyzer:
                 adjusted_config['ai_futures']['rsi'] = {}
             adjusted_config['ai_futures']['rsi']['overbought_level'] = indicator_adjustments['higher_rsi_overbought']
         
-        # Ajusta scores mínimos baseado no regime
         if regime in [MarketRegime.TRENDING_UP, MarketRegime.TRENDING_DOWN]:
-            # Em trending, reduz score mínimo para pegar mais sinais de momentum
             if 'ai_futures' not in adjusted_config:
                 adjusted_config['ai_futures'] = {}
             if 'scoring' not in adjusted_config['ai_futures']:
@@ -319,7 +507,6 @@ class MarketAnalyzer:
             adjusted_config['ai_futures']['scoring']['min_score_short'] = max(3.0, current_min_short - 1.0)
         
         elif regime == MarketRegime.HIGH_VOLATILITY:
-            # Em alta volatilidade, aumenta score mínimo para ser mais seletivo
             if 'ai_futures' not in adjusted_config:
                 adjusted_config['ai_futures'] = {}
             if 'scoring' not in adjusted_config['ai_futures']:
@@ -332,13 +519,11 @@ class MarketAnalyzer:
             adjusted_config['ai_futures']['scoring']['min_score_short'] = min(7.0, current_min_short + 1.5)
         
         elif regime == MarketRegime.RANGING:
-            # Em ranging, favorece mean reversion
             if 'ai_futures' not in adjusted_config:
                 adjusted_config['ai_futures'] = {}
             if 'rsi' not in adjusted_config['ai_futures']:
                 adjusted_config['ai_futures']['rsi'] = {}
             
-            # RSI mais extremo para ranging
             adjusted_config['ai_futures']['rsi']['oversold_level'] = 20
             adjusted_config['ai_futures']['rsi']['overbought_level'] = 80
         
@@ -352,73 +537,61 @@ class MarketAnalyzer:
         regime = regime_analysis.primary_regime
         recommendations = regime_analysis.recommendations
         
-        # Filtro para regimes de trending
         if regime in [MarketRegime.TRENDING_UP, MarketRegime.TRENDING_DOWN]:
-            # Em trending up, evita shorts contra a tendência
             if regime == MarketRegime.TRENDING_UP and signal.action == 'short':
-                if regime_analysis.trend_strength > 0.6:  # Reduzido de 0.7
+                if regime_analysis.trend_strength > 0.6:
                     logger.info(f"Rejeitando SHORT em uptrend (strength: {regime_analysis.trend_strength:.2f})")
                     signal.action = 'hold'
                     signal.reason = "Contra tendência"
             
-            # Em trending down, evita longs contra a tendência  
             elif regime == MarketRegime.TRENDING_DOWN and signal.action == 'long':
-                if regime_analysis.trend_strength > 0.6:  # Reduzido de 0.7
+                if regime_analysis.trend_strength > 0.6:
                     logger.info(f"Rejeitando LONG em downtrend (strength: {regime_analysis.trend_strength:.2f})")
                     signal.action = 'hold'
                     signal.reason = "Contra tendência"
         
-        # Filtro para alta volatilidade - MAIS FLEXÍVEL
         elif regime == MarketRegime.HIGH_VOLATILITY:
-            # Reduz confiança em alta volatilidade
             original_confidence = signal.confidence
-            signal.confidence *= 0.8  # Menos penalização (era 0.7)
+            signal.confidence *= 0.8
             
-            # Threshold menor para aceitar sinais
             min_confidence = self.config.get('ai_futures', {}).get('filters', {}).get('min_confidence', 0.55)
-            if signal.confidence < min_confidence * 0.9:  # 90% do threshold
+            if signal.confidence < min_confidence * 0.9:
                 logger.info(f"Rejeitando sinal em alta volatilidade (confiança: {original_confidence:.2f} -> {signal.confidence:.2f})")
                 signal.action = 'hold'
                 signal.reason = "Baixa confiança em alta volatilidade"
         
-        # Filtro para breakouts - MAIS PERMISSIVO
         elif regime in [MarketRegime.BREAKOUT_UP, MarketRegime.BREAKOUT_DOWN]:
-            # Em breakouts, favorece direção do breakout mas não rejeita tudo
             if regime == MarketRegime.BREAKOUT_UP and signal.action == 'short':
-                if regime_analysis.confidence > 0.8:  # Só rejeita se muito confiante
+                if regime_analysis.confidence > 0.8:
                     logger.info("Rejeitando SHORT durante breakout up forte")
                     signal.action = 'hold'
                     signal.reason = "Contra direção do breakout"
                 else:
-                    signal.confidence *= 0.7  # Apenas reduz confiança
+                    signal.confidence *= 0.7
                     
             elif regime == MarketRegime.BREAKOUT_DOWN and signal.action == 'long':
-                if regime_analysis.confidence > 0.8:  # Só rejeita se muito confiante
+                if regime_analysis.confidence > 0.8:
                     logger.info("Rejeitando LONG durante breakout down forte") 
                     signal.action = 'hold'
                     signal.reason = "Contra direção do breakout"
                 else:
-                    signal.confidence *= 0.7  # Apenas reduz confiança
+                    signal.confidence *= 0.7
             
-            # Aumenta confiança se alinhado com breakout
             elif ((regime == MarketRegime.BREAKOUT_UP and signal.action == 'long') or
                   (regime == MarketRegime.BREAKOUT_DOWN and signal.action == 'short')):
-                signal.confidence = min(0.95, signal.confidence * 1.2)  # Menos boost (era 1.3)
+                signal.confidence = min(0.95, signal.confidence * 1.2)
                 signal.reason += " + breakout confirmation"
         
-        # Filtro para ranging/low volatility - MENOS RESTRITIVO
         elif regime in [MarketRegime.RANGING, MarketRegime.LOW_VOLATILITY]:
-            # Em ranging, prefere extremos mas não é muito restritivo
             rsi = indicators.get('rsi', 50)
             bb_position = indicators.get('bb_position', 0.5)
             
-            # Condições menos restritivas para ranging
             if signal.action == 'long' and not (rsi < 35 or bb_position < 0.25):
-                signal.confidence *= 0.8  # Reduz confiança ao invés de rejeitar
+                signal.confidence *= 0.8
                 signal.reason += " (ranging - confiança reduzida)"
             
             elif signal.action == 'short' and not (rsi > 65 or bb_position > 0.75):
-                signal.confidence *= 0.8  # Reduz confiança ao invés de rejeitar
+                signal.confidence *= 0.8
                 signal.reason += " (ranging - confiança reduzida)"
         
         return signal
@@ -436,6 +609,6 @@ class MarketAnalyzer:
         }
     
     def reset_consecutive_losses(self):
-        """Reset contador de perdas consecutivas (para testes)"""
+        """Reset contador de perdas consecutivas"""
         self.consecutive_losses = 0
         logger.info("Contador de perdas consecutivas resetado")

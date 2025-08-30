@@ -1,15 +1,118 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Position Manager Adapter - Versão Completa
+Position Manager Adapter - Versão Completa com Suporte Inteligente a Cryptos
 Compatibilidade total entre diferentes versões do PositionManager
 """
 
 import logging
+import re
 from typing import Dict, Any, Optional, Union, List, Tuple
 from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
+
+
+class CryptoConfig:
+    """Configurações específicas por tipo de criptomoeda"""
+    
+    # Configurações por categoria de crypto
+    CRYPTO_CONFIGS = {
+        # Major Cryptos - Alta liquidez, spreads baixos
+        'major': {
+            'symbols': ['BTC', 'ETH'],
+            'min_quantity': 0.001,
+            'quantity_decimals': 4,
+            'price_decimals': 2,
+            'typical_spread_pct': 0.01,
+            'volatility_multiplier': 1.0,
+            'position_size_pct': 2.0,
+            'leverage_default': 10,
+            'min_move_profit_pct': 0.3,
+            'max_hours': 8,
+        },
+        
+        # Major Altcoins - Boa liquidez
+        'altcoin_major': {
+            'symbols': ['BNB', 'ADA', 'SOL', 'DOT', 'AVAX', 'MATIC', 'LINK', 'UNI', 'XRP', 'LTC'],
+            'min_quantity': 0.01,
+            'quantity_decimals': 3,
+            'price_decimals': 4,
+            'typical_spread_pct': 0.02,
+            'volatility_multiplier': 1.2,
+            'position_size_pct': 1.8,
+            'leverage_default': 8,
+            'min_move_profit_pct': 0.5,
+            'max_hours': 6,
+        },
+        
+        # Mid-cap Altcoins
+        'altcoin_mid': {
+            'symbols': ['ATOM', 'FTM', 'NEAR', 'ALGO', 'VET', 'XTZ', 'EGLD', 'RUNE', 'KAVA'],
+            'min_quantity': 0.1,
+            'quantity_decimals': 2,
+            'price_decimals': 6,
+            'typical_spread_pct': 0.05,
+            'volatility_multiplier': 1.5,
+            'position_size_pct': 1.5,
+            'leverage_default': 5,
+            'min_move_profit_pct': 0.8,
+            'max_hours': 4,
+        },
+        
+        # Small-cap / Meme tokens
+        'small_cap': {
+            'symbols': ['DOGE', 'SHIB', 'PEPE', 'FLOKI', 'WIF', 'BONK'],
+            'min_quantity': 1.0,
+            'quantity_decimals': 1,
+            'price_decimals': 8,
+            'typical_spread_pct': 0.1,
+            'volatility_multiplier': 2.0,
+            'position_size_pct': 1.0,
+            'leverage_default': 3,
+            'min_move_profit_pct': 1.5,
+            'max_hours': 2,
+        },
+        
+        # DeFi Tokens
+        'defi': {
+            'symbols': ['AAVE', 'COMP', 'MKR', 'SNX', 'YFI', 'CRV', '1INCH', 'SUSHI'],
+            'min_quantity': 0.01,
+            'quantity_decimals': 3,
+            'price_decimals': 4,
+            'typical_spread_pct': 0.03,
+            'volatility_multiplier': 1.3,
+            'position_size_pct': 1.6,
+            'leverage_default': 6,
+            'min_move_profit_pct': 0.6,
+            'max_hours': 5,
+        }
+    }
+    
+    @classmethod
+    def get_crypto_type(cls, symbol: str) -> str:
+        """Detecta o tipo de crypto baseado no símbolo"""
+        clean_symbol = re.sub(r'[/-]USDT?$|[/-]BUSD$|[/-]USD$', '', symbol.upper())
+        
+        for crypto_type, config in cls.CRYPTO_CONFIGS.items():
+            if clean_symbol in config['symbols']:
+                return crypto_type
+        
+        # Fallback baseado em padrões
+        if clean_symbol.endswith(('INU', 'DOGE', 'SHIB', 'PEPE')):
+            return 'small_cap'
+        elif len(clean_symbol) <= 3:
+            return 'major'
+        elif len(clean_symbol) <= 4:
+            return 'altcoin_major'
+        else:
+            return 'altcoin_mid'
+    
+    @classmethod
+    def get_config(cls, symbol: str) -> Dict:
+        """Retorna configuração para o símbolo"""
+        crypto_type = cls.get_crypto_type(symbol)
+        return cls.CRYPTO_CONFIGS.get(crypto_type, cls.CRYPTO_CONFIGS['altcoin_mid'])
 
 
 class PositionWrapper:
@@ -19,12 +122,6 @@ class PositionWrapper:
     """
     
     def __init__(self, data: Union[Dict, Any]):
-        """
-        Inicializa o wrapper
-        
-        Args:
-            data: Dados da posição (dict ou objeto)
-        """
         if isinstance(data, dict):
             self._data = data
             self._is_dict = True
@@ -33,11 +130,9 @@ class PositionWrapper:
             self._is_dict = False
     
     def __getattr__(self, name):
-        """Acesso via atributo (position.symbol)"""
         if self._is_dict:
             if name in self._data:
                 return self._data[name]
-            # Tenta nomes alternativos
             alternatives = {
                 'entry_price': ['entryPrice', 'price', 'avgPrice'],
                 'quantity': ['amount', 'size', 'contracts'],
@@ -55,14 +150,12 @@ class PositionWrapper:
             return getattr(self._data, name, None)
     
     def __getitem__(self, key):
-        """Acesso via índice (position['symbol'])"""
         if self._is_dict:
             return self._data.get(key)
         else:
             return getattr(self._data, key, None)
     
     def __setattr__(self, name, value):
-        """Define atributo"""
         if name.startswith('_'):
             super().__setattr__(name, value)
         elif hasattr(self, '_is_dict') and self._is_dict:
@@ -73,25 +166,21 @@ class PositionWrapper:
             super().__setattr__(name, value)
     
     def __setitem__(self, key, value):
-        """Define via índice"""
         if self._is_dict:
             self._data[key] = value
         else:
             setattr(self._data, key, value)
     
     def get(self, key, default=None):
-        """Método get compatível com dict"""
         if self._is_dict:
             return self._data.get(key, default)
         else:
             return getattr(self._data, key, default)
     
     def to_dict(self) -> Dict:
-        """Converte para dicionário"""
         if self._is_dict:
             return self._data.copy()
         else:
-            # Converte objeto para dict
             result = {}
             for attr in dir(self._data):
                 if not attr.startswith('_'):
@@ -106,331 +195,219 @@ class PositionWrapper:
 
 class PositionManagerAdapter:
     """
-    Adaptador principal que garante compatibilidade entre versões
-    Nome da classe mantido como 'PositionManagerAdapter' para compatibilidade
+    Adaptador principal com suporte inteligente a criptomoedas
+    Compatibilidade total entre diferentes versões do PositionManager
     """
     
     def __init__(self, position_manager):
-        """
-        Inicializa o adaptador
-        
-        Args:
-            position_manager: Instância original do PositionManager
-        """
         self.position_manager = position_manager
         self.strategy_cache = {}
         self.attempt_log = {}
+        self.crypto_config = CryptoConfig()
         
-        # Garante que o position_manager tem atributos essenciais
         if not hasattr(self.position_manager, 'positions'):
             self.position_manager.positions = {}
         
-        logger.info("PositionManagerAdapter inicializado com sucesso")
+        logger.info("PositionManagerAdapter inicializado com suporte a cryptos")
     
-    def _wrap_position(self, position):
-        """Envolve posição em wrapper se necessário"""
-        if position is None:
-            return None
-        if isinstance(position, (dict, object)):
-            return PositionWrapper(position)
-        return position
+    # ========== MÉTODOS CRYPTO-AWARE ==========
     
-    # ========== MÉTODOS ESSENCIAIS ==========
-    
-    def has_position(self, symbol: str) -> bool:
-        """Verifica se tem posição para o símbolo"""
-        if hasattr(self.position_manager, 'has_position'):
-            return self.position_manager.has_position(symbol)
-        elif hasattr(self.position_manager, 'positions'):
-            return symbol in self.position_manager.positions
-        return False
-    
-    def get_position(self, symbol: str):
-        """Obtém dados da posição com wrapper"""
-        position = None
-        
-        if hasattr(self.position_manager, 'get_position'):
-            position = self.position_manager.get_position(symbol)
-        elif hasattr(self.position_manager, 'positions'):
-            position = self.position_manager.positions.get(symbol)
-        
-        # Sempre retorna wrapped para evitar erro de 'dict' object
-        return self._wrap_position(position)
-    
-    def get_all_positions(self):
-        """Retorna todas as posições com wrapper"""
-        positions = {}
-        
-        if hasattr(self.position_manager, 'get_all_positions'):
-            positions = self.position_manager.get_all_positions()
-        elif hasattr(self.position_manager, 'positions'):
-            positions = self.position_manager.positions
-        
-        # Wrap todas as posições
-        wrapped = {}
-        for symbol, pos in positions.items():
-            wrapped[symbol] = self._wrap_position(pos)
-        
-        return wrapped
-    
-    def can_open_position(self, symbol: str) -> bool:
-        """Verifica se pode abrir nova posição"""
-        if hasattr(self.position_manager, 'can_open_position'):
-            return self.position_manager.can_open_position(symbol)
-        
-        # Implementação fallback
-        if self.has_position(symbol):
-            return False
-        
-        # Verifica se está habilitado
-        if hasattr(self.position_manager, 'is_enabled'):
-            if not self.position_manager.is_enabled():
-                return False
-        
-        return True
+    def get_crypto_config(self, symbol: str) -> Dict:
+        """Obtém configuração específica para o crypto"""
+        config = self.crypto_config.get_config(symbol)
+        crypto_type = self.crypto_config.get_crypto_type(symbol)
+        logger.debug(f"Crypto {symbol} detectado como: {crypto_type}")
+        return config
     
     def calculate_position_size(self, symbol: str, price: float, side: str, 
                                confidence: float = 1.0) -> float:
-        """Calcula tamanho da posição"""
+        """Calcula tamanho da posição específico para cada crypto"""
+        
+        # Tenta método original primeiro
         if hasattr(self.position_manager, 'calculate_position_size'):
             try:
-                # Tenta com todos os argumentos
-                return self.position_manager.calculate_position_size(
+                original_size = self.position_manager.calculate_position_size(
                     symbol, price, side, confidence
                 )
+                if original_size > 0:
+                    return self._adjust_position_size(symbol, original_size)
             except TypeError:
                 try:
-                    # Tenta sem confidence
-                    return self.position_manager.calculate_position_size(
+                    original_size = self.position_manager.calculate_position_size(
                         symbol, price, side
                     )
+                    if original_size > 0:
+                        return self._adjust_position_size(symbol, original_size)
                 except:
                     pass
-        
-        # Fallback: cálculo simples
-        balance = self.get_balance()
-        risk_pct = 2.0  # 2% padrão
-        risk_amount = balance * (risk_pct / 100.0)
-        return risk_amount / price
-    
-    def set_balance(self, balance: float):
-        """Define saldo atual"""
-        if hasattr(self.position_manager, 'set_balance'):
-            return self.position_manager.set_balance(balance)
-        elif hasattr(self.position_manager, 'balance'):
-            self.position_manager.balance = balance
-            logger.info(f"Saldo atualizado: ${balance:.2f}")
-    
-    def get_balance(self) -> float:
-        """Retorna saldo atual"""
-        if hasattr(self.position_manager, 'get_balance'):
-            return self.position_manager.get_balance()
-        elif hasattr(self.position_manager, 'balance'):
-            return self.position_manager.balance
-        return 0.0
-    
-    def print_positions(self):
-        """Imprime posições atuais"""
-        if hasattr(self.position_manager, 'print_positions'):
-            return self.position_manager.print_positions()
-        else:
-            # Implementação fallback
-            positions = self.get_all_positions()
-            balance = self.get_balance()
-            
-            if not positions:
-                print(f"Nenhuma posição aberta | Saldo: ${balance:.2f}")
-            else:
-                print(f"Posições abertas: {len(positions)} | Saldo: ${balance:.2f}")
-                for symbol, pos in positions.items():
-                    side = pos.side or pos.get('side', 'unknown')
-                    quantity = pos.quantity or pos.get('quantity', 0)
-                    entry_price = pos.entry_price or pos.get('entry_price', 0)
-                    print(f"  {symbol}: {side.upper()} {quantity:.4f} @ ${entry_price:.2f}")
-    
-    def sync_positions(self, positions):
-        """Sincroniza posições com a exchange"""
-        wrapped_positions = {}
-        
-        for pos in positions:
-            # Detecta o símbolo
-            if hasattr(pos, 'symbol'):
-                symbol = pos.symbol
-            elif isinstance(pos, dict) and 'symbol' in pos:
-                symbol = pos['symbol']
-            else:
-                symbol = str(pos)
-            
-            wrapped_positions[symbol] = self._wrap_position(pos)
-        
-        if hasattr(self.position_manager, 'sync_positions'):
-            return self.position_manager.sync_positions(positions)
-        else:
-            # Implementação fallback
-            logger.info(f"Sincronizando {len(positions)} posições")
-            if hasattr(self.position_manager, 'positions'):
-                self.position_manager.positions = wrapped_positions
-    
-    def cancel_all_orders(self):
-        """Cancela todas as ordens abertas"""
-        if hasattr(self.position_manager, 'cancel_all_orders'):
-            return self.position_manager.cancel_all_orders()
-        else:
-            logger.info("cancel_all_orders: operação não disponível")
-    
-    # ========== MÉTODOS DE TIMING ==========
-    
-    def should_close_by_timing(self, symbol: str, current_price: float) -> Tuple[bool, str]:
-        """
-        Verifica se a posição deve ser fechada baseado em critérios de tempo
-        """
-        if hasattr(self.position_manager, 'should_close_by_timing'):
-            try:
-                return self.position_manager.should_close_by_timing(symbol, current_price)
             except:
                 pass
         
-        # Implementação fallback
+        # Cálculo próprio crypto-specific
+        return self._calculate_crypto_specific_size(symbol, price, side, confidence)
+    
+    def _calculate_crypto_specific_size(self, symbol: str, price: float, 
+                                      side: str, confidence: float) -> float:
+        """Calcula tamanho específico para o tipo de crypto"""
+        
+        config = self.get_crypto_config(symbol)
+        balance = self.get_balance()
+        
+        if balance <= 0:
+            balance = 1000.0
+        
+        # Ajusta risco baseado no crypto e confiança
+        base_risk_pct = config['position_size_pct']
+        confidence_adj = max(0.5, min(1.0, confidence))
+        risk_pct = base_risk_pct * confidence_adj
+        
+        # Ajusta pela volatilidade
+        volatility_adj = config['volatility_multiplier']
+        risk_pct = risk_pct / volatility_adj
+        
+        # Calcula posição
+        risk_amount = balance * (risk_pct / 100.0)
+        leverage = config['leverage_default']
+        position_value = risk_amount * leverage
+        quantity = position_value / price
+        
+        # Aplica limites
+        min_qty = config['min_quantity']
+        decimals = config['quantity_decimals']
+        quantity = max(min_qty, round(quantity, decimals))
+        
+        crypto_type = self.crypto_config.get_crypto_type(symbol)
+        logger.info(f"Posição {symbol} ({crypto_type}): balance=${balance}, "
+                   f"risk={risk_pct:.2f}%, leverage={leverage}x, qty={quantity}")
+        
+        return quantity
+    
+    def _adjust_position_size(self, symbol: str, original_size: float) -> float:
+        """Ajusta tamanho baseado no crypto"""
+        config = self.get_crypto_config(symbol)
+        
+        min_qty = config['min_quantity']
+        if original_size < min_qty:
+            logger.warning(f"Ajustando quantity {symbol}: {original_size} -> {min_qty}")
+            original_size = min_qty
+        
+        decimals = config['quantity_decimals']
+        return round(original_size, decimals)
+    
+    def should_close_by_timing(self, symbol: str, current_price: float) -> Tuple[bool, str]:
+        """Lógica de fechamento considerando características do crypto"""
+        
+        # Tenta método original
+        if hasattr(self.position_manager, 'should_close_by_timing'):
+            try:
+                should_close, reason = self.position_manager.should_close_by_timing(symbol, current_price)
+                if should_close:
+                    return self._apply_crypto_timing_filter(symbol, current_price, reason)
+            except:
+                pass
+        
+        # Implementação crypto-specific
+        return self._crypto_specific_timing_check(symbol, current_price)
+    
+    def _crypto_specific_timing_check(self, symbol: str, current_price: float) -> Tuple[bool, str]:
+        """Verificação de timing específica para crypto"""
+        
         position = self.get_position(symbol)
         if not position:
             return False, "Sem posição"
         
-        # Obtém tempo de entrada
-        entry_time = position.entry_time or position.get('entry_time')
-        if not entry_time:
-            return False, "Sem timestamp de entrada"
+        config = self.get_crypto_config(symbol)
+        crypto_type = self.crypto_config.get_crypto_type(symbol)
         
-        # Converte para datetime se necessário
+        entry_time = position.entry_time or position.get('entry_time')
+        entry_price = position.entry_price or position.get('entry_price', current_price)
+        side = position.side or position.get('side', 'long')
+        
+        if not entry_time:
+            return False, "Sem timestamp"
+        
+        # Converte timestamp
         if isinstance(entry_time, str):
             try:
                 entry_time = datetime.fromisoformat(entry_time.replace('Z', '+00:00'))
             except:
-                return False, "Erro no timestamp"
+                return False, "Timestamp inválido"
         
-        # Calcula idade da posição
+        # Calcula idade
         position_age = datetime.now() - entry_time
         age_hours = position_age.total_seconds() / 3600
         
-        # Critério: fecha após 24 horas
-        max_hours = 24
-        if hasattr(self.position_manager, 'config'):
-            max_seconds = self.position_manager.config.get('strategy', {}).get('max_position_hold_seconds', 86400)
-            max_hours = max_seconds / 3600
+        # Tempo máximo baseado no crypto
+        max_hours = config['max_hours']
         
+        # Calcula PnL atual
+        if str(side).lower() in ['long', 'buy']:
+            current_pnl_pct = ((current_price - entry_price) / entry_price) * 100
+        else:
+            current_pnl_pct = ((entry_price - current_price) / entry_price) * 100
+        
+        min_profitable_move = config['min_move_profit_pct']
+        
+        # Lógica inteligente
         if age_hours > max_hours:
-            return True, f"Posição muito antiga: {age_hours:.1f}h > {max_hours:.1f}h"
+            # Se muito lucrativa, estende tempo
+            if current_pnl_pct > min_profitable_move * 2:
+                extended_hours = max_hours * 1.5
+                if age_hours < extended_hours:
+                    return False, f"Posição lucrativa (+{current_pnl_pct:.2f}%), estendendo"
+            
+            # Fecha por tempo
+            return True, f"Tempo limite {crypto_type}: {age_hours:.1f}h > {max_hours}h (PnL: {current_pnl_pct:.2f}%)"
         
-        return False, f"Dentro do tempo: {age_hours:.1f}h"
+        # Verifica perdas persistentes
+        loss_threshold_hours = max_hours * 0.5
+        if age_hours > loss_threshold_hours and current_pnl_pct < -min_profitable_move:
+            return True, f"Perda persistente: {current_pnl_pct:.2f}% há {age_hours:.1f}h"
+        
+        return False, f"Mantendo {crypto_type}: {age_hours:.1f}h, PnL: {current_pnl_pct:.2f}%"
     
-    def check_take_profit_conditions(self, symbol: str, current_price: float) -> Tuple[bool, str, float]:
-        """
-        Verifica condições de take profit
-        """
-        if hasattr(self.position_manager, 'check_take_profit_conditions'):
-            try:
-                return self.position_manager.check_take_profit_conditions(symbol, current_price)
-            except:
-                pass
+    def _apply_crypto_timing_filter(self, symbol: str, current_price: float, 
+                                   original_reason: str) -> Tuple[bool, str]:
+        """Aplica filtro adicional baseado no crypto"""
         
-        # Implementação fallback
+        config = self.get_crypto_config(symbol)
         position = self.get_position(symbol)
-        if not position:
-            return False, "Sem posição", 0.0
         
-        # Obtém dados da posição
+        if not position:
+            return True, original_reason
+        
         entry_price = position.entry_price or position.get('entry_price', current_price)
         side = position.side or position.get('side', 'long')
         
-        # Calcula PnL percentual
         if str(side).lower() in ['long', 'buy']:
-            pnl_pct = ((current_price - entry_price) / entry_price) * 100
+            current_pnl_pct = ((current_price - entry_price) / entry_price) * 100
         else:
-            pnl_pct = ((entry_price - current_price) / entry_price) * 100
+            current_pnl_pct = ((entry_price - current_price) / entry_price) * 100
         
-        # Take profit em 3% (padrão)
-        tp_threshold = 3.0
-        if hasattr(self.position_manager, 'config'):
-            tp_threshold = self.position_manager.config.get('risk_management', {}).get('take_profit', {}).get('percentage', 3.0)
+        min_profit = config['min_move_profit_pct']
+        if current_pnl_pct > min_profit * 1.5:
+            return False, f"Mantendo {symbol} lucrativo: +{current_pnl_pct:.2f}%"
         
-        if pnl_pct >= tp_threshold:
-            return True, f"Take profit: +{pnl_pct:.2f}%", 1.0
-        
-        # Take profit parcial em 1.5%
-        partial_threshold = tp_threshold / 2
-        if pnl_pct >= partial_threshold:
-            return True, f"Take profit parcial: +{pnl_pct:.2f}%", 0.5
-        
-        return False, f"PnL: {pnl_pct:.2f}%", 0.0
-    
-    # ========== MÉTODOS DE ABERTURA/FECHAMENTO ==========
-    
-    def open_position(self, symbol: str, side: str, size: float, price: float,
-                     reason: str = None, confidence: float = None, **kwargs) -> Dict[str, Any]:
-        """
-        Abre posição com detecção automática de assinatura
-        """
-        # Lista de estratégias para tentar
-        strategies = [
-            lambda: self.position_manager.open_position(
-                symbol=symbol, side=side, size=size, price=price, 
-                reason=reason, confidence=confidence
-            ),
-            lambda: self.position_manager.open_position(
-                symbol=symbol, side=side, size=size, price=price, reason=reason
-            ),
-            lambda: self.position_manager.open_position(
-                symbol=symbol, side=side, size=size, price=price
-            ),
-            lambda: self.position_manager.open_position(symbol, side, size, price),
-        ]
-        
-        for strategy in strategies:
-            try:
-                result = strategy()
-                if result is None:
-                    continue
-                
-                # Cria posição wrapped
-                position_data = {
-                    'symbol': symbol,
-                    'side': side,
-                    'quantity': size,
-                    'entry_price': price,
-                    'entry_time': datetime.now(),
-                    'reason': reason
-                }
-                
-                # Adiciona ao tracking
-                if hasattr(self.position_manager, 'positions'):
-                    self.position_manager.positions[symbol] = position_data
-                
-                # Normaliza resultado
-                if isinstance(result, dict):
-                    return result
-                else:
-                    return {'success': True, 'trade': result, 'position': position_data}
-                    
-            except Exception as e:
-                continue
-        
-        # Se todas falharam, retorna erro
-        return {'success': False, 'error': 'Não foi possível abrir posição'}
+        return True, f"{original_reason} (PnL: {current_pnl_pct:.2f}%)"
     
     def close_position(self, symbol: str, price: float = None, reason: str = None,
                       percentage: float = 1.0, **kwargs) -> Dict[str, Any]:
-        """
-        Fecha posição com compatibilidade total
-        """
-        # Obtém posição atual para calcular PnL
+        """Fecha posição com cálculo CORRETO de PnL"""
+        
         position = self.get_position(symbol)
         
-        # Cache de estratégia bem-sucedida
+        # Cache de estratégia
         cache_key = 'close_position'
         if cache_key in self.strategy_cache:
             try:
                 strategy_name = self.strategy_cache[cache_key]
                 result = self._execute_cached_close(strategy_name, symbol, price, reason, percentage)
                 if result.get('success') is not False:
+                    # Garante PnL correto
+                    if position and price and 'pnl' not in result:
+                        pnl = self._calculate_correct_pnl(position, price)
+                        result['pnl'] = pnl
+                        result['pnl_percent'] = self._calculate_pnl_percent(position, pnl)
                     return result
             except:
                 del self.strategy_cache[cache_key]
@@ -462,22 +439,24 @@ class PositionManagerAdapter:
                 if isinstance(result, dict):
                     if result.get('success') is not False:
                         self.strategy_cache[cache_key] = name
+                        # Garante PnL correto
+                        if position and price:
+                            if 'pnl' not in result:
+                                result['pnl'] = self._calculate_correct_pnl(position, price)
+                            if 'pnl_percent' not in result:
+                                result['pnl_percent'] = self._calculate_pnl_percent(position, result.get('pnl', 0))
                         return result
                 else:
-                    # Calcula PnL se possível
-                    pnl = 0
-                    if position and price:
-                        entry_price = position.entry_price or position.get('entry_price')
-                        quantity = position.quantity or position.get('quantity')
-                        side = position.side or position.get('side')
-                        
-                        if entry_price and quantity:
-                            if str(side).lower() in ['long', 'buy']:
-                                pnl = (price - entry_price) * quantity
-                            else:
-                                pnl = (entry_price - price) * quantity
+                    # Calcula PnL correto
+                    pnl = self._calculate_correct_pnl(position, price) if position and price else 0
+                    pnl_percent = self._calculate_pnl_percent(position, pnl) if position else 0
                     
-                    return {'success': True, 'trade': result, 'pnl': pnl}
+                    return {
+                        'success': True, 
+                        'trade': result, 
+                        'pnl': pnl,
+                        'pnl_percent': pnl_percent
+                    }
                     
             except TypeError as e:
                 if 'percentage' in str(e):
@@ -485,8 +464,286 @@ class PositionManagerAdapter:
             except Exception:
                 continue
         
-        # Fallback: implementação própria
-        return self._fallback_close_position(symbol, price, reason, percentage)
+        # Fallback
+        return self._fallback_close_position_corrected(symbol, price, reason, percentage)
+    
+    def _calculate_correct_pnl(self, position, exit_price: float) -> float:
+        """Calcula PnL corretamente"""
+        entry_price = position.entry_price or position.get('entry_price', 0)
+        quantity = position.quantity or position.get('quantity', 0)
+        side = position.side or position.get('side', 'long')
+        
+        if not all([entry_price, quantity, exit_price]):
+            return 0.0
+        
+        # Cálculo correto do PnL
+        if str(side).lower() in ['long', 'buy']:
+            price_diff = exit_price - entry_price
+        else:
+            price_diff = entry_price - exit_price
+        
+        pnl = price_diff * quantity
+        
+        logger.info(f"PnL calculado: {side} {quantity} @ ${entry_price} -> ${exit_price} = ${pnl:.4f}")
+        return pnl
+    
+    def _calculate_pnl_percent(self, position, pnl: float) -> float:
+        """Calcula PnL percentual"""
+        entry_price = position.entry_price or position.get('entry_price', 0)
+        quantity = position.quantity or position.get('quantity', 0)
+        
+        if not entry_price or not quantity:
+            return 0.0
+        
+        entry_value = entry_price * quantity
+        return (pnl / entry_value * 100) if entry_value > 0 else 0.0
+    
+    def _fallback_close_position_corrected(self, symbol: str, price: float, 
+                                         reason: str, percentage: float) -> Dict:
+        """Fallback com cálculo correto"""
+        position = self.get_position(symbol)
+        if not position:
+            return {'success': False, 'error': 'Posição não encontrada'}
+        
+        pnl = self._calculate_correct_pnl(position, price) if price else 0.0
+        pnl_percent = self._calculate_pnl_percent(position, pnl)
+        
+        # Remove do tracking
+        if hasattr(self.position_manager, 'positions') and symbol in self.position_manager.positions:
+            del self.position_manager.positions[symbol]
+        
+        result = {
+            'success': True,
+            'trade': {
+                'symbol': symbol,
+                'action': 'close',
+                'exit_price': price,
+                'reason': reason,
+                'quantity': position.quantity,
+                'entry_price': position.entry_price,
+                'side': position.side
+            },
+            'pnl': pnl,
+            'pnl_percent': pnl_percent
+        }
+        
+        logger.info(f"Posição fechada: {symbol} PnL=${pnl:.4f} ({pnl_percent:.2f}%)")
+        return result
+    
+    def get_crypto_info(self, symbol: str) -> Dict:
+        """Retorna informações sobre o crypto detectado"""
+        config = self.get_crypto_config(symbol)
+        crypto_type = self.crypto_config.get_crypto_type(symbol)
+        
+        return {
+            'symbol': symbol,
+            'detected_type': crypto_type,
+            'min_quantity': config['min_quantity'],
+            'position_size_pct': config['position_size_pct'],
+            'leverage_default': config['leverage_default'],
+            'min_move_profit_pct': config['min_move_profit_pct'],
+            'max_hours': config['max_hours'],
+            'volatility_multiplier': config['volatility_multiplier']
+        }
+    
+    # ========== MÉTODOS ORIGINAIS (mantidos para compatibilidade) ==========
+    
+    def _wrap_position(self, position):
+        """Envolve posição em wrapper se necessário"""
+        if position is None:
+            return None
+        if isinstance(position, (dict, object)):
+            return PositionWrapper(position)
+        return position
+    
+    def has_position(self, symbol: str) -> bool:
+        """Verifica se tem posição para o símbolo"""
+        if hasattr(self.position_manager, 'has_position'):
+            return self.position_manager.has_position(symbol)
+        elif hasattr(self.position_manager, 'positions'):
+            return symbol in self.position_manager.positions
+        return False
+    
+    def get_position(self, symbol: str):
+        """Obtém dados da posição com wrapper"""
+        position = None
+        
+        if hasattr(self.position_manager, 'get_position'):
+            position = self.position_manager.get_position(symbol)
+        elif hasattr(self.position_manager, 'positions'):
+            position = self.position_manager.positions.get(symbol)
+        
+        return self._wrap_position(position)
+    
+    def get_all_positions(self):
+        """Retorna todas as posições com wrapper"""
+        positions = {}
+        
+        if hasattr(self.position_manager, 'get_all_positions'):
+            positions = self.position_manager.get_all_positions()
+        elif hasattr(self.position_manager, 'positions'):
+            positions = self.position_manager.positions
+        
+        wrapped = {}
+        for symbol, pos in positions.items():
+            wrapped[symbol] = self._wrap_position(pos)
+        
+        return wrapped
+    
+    def can_open_position(self, symbol: str) -> bool:
+        """Verifica se pode abrir nova posição"""
+        if hasattr(self.position_manager, 'can_open_position'):
+            return self.position_manager.can_open_position(symbol)
+        
+        if self.has_position(symbol):
+            return False
+        
+        if hasattr(self.position_manager, 'is_enabled'):
+            if not self.position_manager.is_enabled():
+                return False
+        
+        return True
+    
+    def set_balance(self, balance: float):
+        """Define saldo atual"""
+        if hasattr(self.position_manager, 'set_balance'):
+            return self.position_manager.set_balance(balance)
+        elif hasattr(self.position_manager, 'balance'):
+            self.position_manager.balance = balance
+            logger.info(f"Saldo atualizado: ${balance:.2f}")
+    
+    def get_balance(self) -> float:
+        """Retorna saldo atual"""
+        if hasattr(self.position_manager, 'get_balance'):
+            return self.position_manager.get_balance()
+        elif hasattr(self.position_manager, 'balance'):
+            return self.position_manager.balance
+        return 1000.0  # Default melhor que 0.0
+    
+    def print_positions(self):
+        """Imprime posições atuais"""
+        if hasattr(self.position_manager, 'print_positions'):
+            return self.position_manager.print_positions()
+        else:
+            positions = self.get_all_positions()
+            balance = self.get_balance()
+            
+            if not positions:
+                print(f"Nenhuma posição aberta | Saldo: ${balance:.2f}")
+            else:
+                print(f"Posições abertas: {len(positions)} | Saldo: ${balance:.2f}")
+                for symbol, pos in positions.items():
+                    side = pos.side or pos.get('side', 'unknown')
+                    quantity = pos.quantity or pos.get('quantity', 0)
+                    entry_price = pos.entry_price or pos.get('entry_price', 0)
+                    print(f"  {symbol}: {side.upper()} {quantity:.4f} @ ${entry_price:.2f}")
+    
+    def sync_positions(self, positions):
+        """Sincroniza posições com a exchange"""
+        wrapped_positions = {}
+        
+        for pos in positions:
+            if hasattr(pos, 'symbol'):
+                symbol = pos.symbol
+            elif isinstance(pos, dict) and 'symbol' in pos:
+                symbol = pos['symbol']
+            else:
+                symbol = str(pos)
+            
+            wrapped_positions[symbol] = self._wrap_position(pos)
+        
+        if hasattr(self.position_manager, 'sync_positions'):
+            return self.position_manager.sync_positions(positions)
+        else:
+            logger.info(f"Sincronizando {len(positions)} posições")
+            if hasattr(self.position_manager, 'positions'):
+                self.position_manager.positions = wrapped_positions
+    
+    def cancel_all_orders(self):
+        """Cancela todas as ordens abertas"""
+        if hasattr(self.position_manager, 'cancel_all_orders'):
+            return self.position_manager.cancel_all_orders()
+        else:
+            logger.info("cancel_all_orders: operação não disponível")
+    
+    def check_take_profit_conditions(self, symbol: str, current_price: float) -> Tuple[bool, str, float]:
+        """Verifica condições de take profit"""
+        if hasattr(self.position_manager, 'check_take_profit_conditions'):
+            try:
+                return self.position_manager.check_take_profit_conditions(symbol, current_price)
+            except:
+                pass
+        
+        position = self.get_position(symbol)
+        if not position:
+            return False, "Sem posição", 0.0
+        
+        entry_price = position.entry_price or position.get('entry_price', current_price)
+        side = position.side or position.get('side', 'long')
+        
+        if str(side).lower() in ['long', 'buy']:
+            pnl_pct = ((current_price - entry_price) / entry_price) * 100
+        else:
+            pnl_pct = ((entry_price - current_price) / entry_price) * 100
+        
+        tp_threshold = 3.0
+        if hasattr(self.position_manager, 'config'):
+            tp_threshold = self.position_manager.config.get('risk_management', {}).get('take_profit', {}).get('percentage', 3.0)
+        
+        if pnl_pct >= tp_threshold:
+            return True, f"Take profit: +{pnl_pct:.2f}%", 1.0
+        
+        partial_threshold = tp_threshold / 2
+        if pnl_pct >= partial_threshold:
+            return True, f"Take profit parcial: +{pnl_pct:.2f}%", 0.5
+        
+        return False, f"PnL: {pnl_pct:.2f}%", 0.0
+    
+    def open_position(self, symbol: str, side: str, size: float, price: float,
+                     reason: str = None, confidence: float = None, **kwargs) -> Dict[str, Any]:
+        """Abre posição com detecção automática de assinatura"""
+        
+        strategies = [
+            lambda: self.position_manager.open_position(
+                symbol=symbol, side=side, size=size, price=price, 
+                reason=reason, confidence=confidence
+            ),
+            lambda: self.position_manager.open_position(
+                symbol=symbol, side=side, size=size, price=price, reason=reason
+            ),
+            lambda: self.position_manager.open_position(
+                symbol=symbol, side=side, size=size, price=price
+            ),
+            lambda: self.position_manager.open_position(symbol, side, size, price),
+        ]
+        
+        for strategy in strategies:
+            try:
+                result = strategy()
+                if result is None:
+                    continue
+                
+                position_data = {
+                    'symbol': symbol,
+                    'side': side,
+                    'quantity': size,
+                    'entry_price': price,
+                    'entry_time': datetime.now(),
+                    'reason': reason
+                }
+                
+                if hasattr(self.position_manager, 'positions'):
+                    self.position_manager.positions[symbol] = position_data
+                
+                if isinstance(result, dict):
+                    return result
+                else:
+                    return {'success': True, 'trade': result, 'position': position_data}
+                    
+            except Exception as e:
+                continue
+        
+        return {'success': False, 'error': 'Não foi possível abrir posição'}
     
     def _execute_cached_close(self, strategy_name: str, symbol: str, price: float, 
                              reason: str, percentage: float) -> Dict:
@@ -501,31 +758,6 @@ class PositionManagerAdapter:
             return self.position_manager.close_position(symbol)
         else:
             raise ValueError(f"Estratégia desconhecida: {strategy_name}")
-    
-    def _fallback_close_position(self, symbol: str, price: float, reason: str, percentage: float) -> Dict:
-        """Implementação fallback de fechamento"""
-        position = self.get_position(symbol)
-        if not position:
-            return {'success': False, 'error': 'Posição não encontrada'}
-        
-        # Remove do tracking
-        if hasattr(self.position_manager, 'positions'):
-            if symbol in self.position_manager.positions:
-                del self.position_manager.positions[symbol]
-        
-        # Retorna sucesso simulado
-        return {
-            'success': True,
-            'trade': {
-                'symbol': symbol,
-                'action': 'close',
-                'exit_price': price,
-                'reason': reason
-            },
-            'pnl': 0
-        }
-    
-    # ========== MÉTODOS DE CONFIGURAÇÃO ==========
     
     def _get_config(self, path: str, default=None):
         """Helper para obter configuração"""
@@ -542,12 +774,8 @@ class PositionManagerAdapter:
                 return default
         return default
     
-    # ========== PROXY AUTOMÁTICO ==========
-    
     def __getattr__(self, name):
-        """
-        Proxy automático para métodos não implementados
-        """
+        """Proxy automático para métodos não implementados"""
         if hasattr(self.position_manager, name):
             attr = getattr(self.position_manager, name)
             if callable(attr):
@@ -563,49 +791,77 @@ class PositionManagerAdapter:
         else:
             raise AttributeError(f"'{type(self).__name__}' não possui atributo '{name}'")
     
-    # ========== MÉTODOS DE DEBUG ==========
-    
     def diagnose(self):
         """Diagnóstico completo do adapter"""
         print("="*60)
-        print("🔍 DIAGNÓSTICO DO POSITION MANAGER ADAPTER")
+        print("DIAGNÓSTICO DO POSITION MANAGER ADAPTER")
         print("="*60)
         
-        # Métodos essenciais
         essential_methods = [
             'has_position', 'get_position', 'can_open_position',
             'open_position', 'close_position', 'calculate_position_size',
             'should_close_by_timing', 'check_take_profit_conditions'
         ]
         
-        print("📋 Métodos Essenciais:")
+        print("Métodos Essenciais:")
         for method in essential_methods:
             if hasattr(self, method):
                 print(f"  ✅ {method}")
             else:
                 print(f"  ❌ {method}")
         
-        # Métodos do manager original
         if self.position_manager:
             original_methods = [m for m in dir(self.position_manager) 
                               if not m.startswith('_') and callable(getattr(self.position_manager, m))]
-            print(f"\n📋 Métodos do PositionManager Original: {len(original_methods)}")
-            for method in sorted(original_methods)[:10]:  # Mostra apenas os primeiros 10
+            print(f"\nMétodos do PositionManager Original: {len(original_methods)}")
+            for method in sorted(original_methods)[:10]:
                 print(f"    • {method}")
             if len(original_methods) > 10:
                 print(f"    ... e mais {len(original_methods)-10} métodos")
         
-        # Cache de estratégias
         if self.strategy_cache:
-            print(f"\n💾 Cache de Estratégias:")
+            print(f"\nCache de Estratégias:")
             for key, value in self.strategy_cache.items():
                 print(f"    {key}: {value}")
         
-        # Posições atuais
         positions = self.get_all_positions()
-        print(f"\n📊 Posições Atuais: {len(positions)}")
+        print(f"\nPosições Atuais: {len(positions)}")
         for symbol in positions:
             print(f"    • {symbol}")
+        
+        print("="*60)
+    
+    def diagnose_crypto_setup(self, symbol: str, price: float = 1000.0) -> None:
+        """Diagnóstico detalhado para um crypto específico"""
+        print("="*60)
+        print(f"DIAGNÓSTICO CRYPTO: {symbol}")
+        print("="*60)
+        
+        info = self.get_crypto_info(symbol)
+        
+        print(f"Tipo Detectado: {info['detected_type'].upper()}")
+        print(f"Quantidade Mínima: {info['min_quantity']}")
+        print(f"% do Saldo por Trade: {info['position_size_pct']}%")
+        print(f"Leverage Padrão: {info['leverage_default']}x")
+        print(f"Movimento Mín. Lucro: {info['min_move_profit_pct']}%")
+        print(f"Tempo Máximo: {info['max_hours']}h")
+        print(f"Multiplicador Volatilidade: {info['volatility_multiplier']}x")
+        
+        test_size = self.calculate_position_size(symbol, price, 'long', 0.8)
+        print(f"\nSimulação (preço ${price}):")
+        print(f"Tamanho da Posição: {test_size}")
+        
+        position_value = test_size * price
+        print(f"Valor da Posição: ${position_value:.2f}")
+        
+        # Calcula targets de preço
+        config = self.get_crypto_config(symbol)
+        min_move = config['min_move_profit_pct']
+        long_target = price * (1 + min_move / 100)
+        short_target = price * (1 - min_move / 100)
+        
+        print(f"Target LONG (+{min_move}%): ${long_target:.6f}")
+        print(f"Target SHORT (-{min_move}%): ${short_target:.6f}")
         
         print("="*60)
 
@@ -614,5 +870,22 @@ class PositionManagerAdapter:
 EnhancedPositionManagerAdapter = PositionManagerAdapter
 
 
+# Função de teste
+def test_crypto_detection():
+    """Testa a detecção de diferentes cryptos"""
+    symbols = [
+        'ETH/USDT', 'BTC/USDT', 'ADA/USDT', 'SOL/USDT', 
+        'DOGE/USDT', 'SHIB/USDT', 'ATOM/USDT', 'AAVE/USDT'
+    ]
+    
+    print("TESTE DE DETECÇÃO DE CRYPTOS")
+    print("-" * 50)
+    
+    for symbol in symbols:
+        crypto_type = CryptoConfig.get_crypto_type(symbol)
+        config = CryptoConfig.get_config(symbol)
+        print(f"{symbol:12} -> {crypto_type:15} (min: {config['min_quantity']:6}, risk: {config['position_size_pct']}%)")
+
+
 # Exporta as classes principais
-__all__ = ['PositionManagerAdapter', 'EnhancedPositionManagerAdapter', 'PositionWrapper']
+__all__ = ['PositionManagerAdapter', 'EnhancedPositionManagerAdapter', 'PositionWrapper', 'CryptoConfig']
